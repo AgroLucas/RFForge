@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import time, logging, crcmod, struct
 from lib import common
@@ -13,8 +13,8 @@ common.parse_and_init()
 # Parse the address
 address = ''
 if common.args.address is not None:
-  address = common.args.address.replace(':', '').decode('hex')[::-1]
-  address_string = ':'.join('{:02X}'.format(ord(b)) for b in address[::-1])
+  address = bytes.fromhex(common.args.address.replace(':', ''))[::-1]
+  address_string = ':'.join('{:02X}'.format(b) for b in address[::-1])
 
 # Initialize the target protocol
 if common.args.family == Protocols.HS304:
@@ -43,7 +43,8 @@ if common.args.family == Protocols.LogitechEncrypted:
   p = Logitech(address, encrypted=True)
 
 # Initialize the injector instance
-i = Injector(p)
+i = Injector(p, KEYMAP_GERMAN)
+import time
 
 # Inject some sample strings
 i.start_injection()
