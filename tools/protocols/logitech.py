@@ -45,12 +45,12 @@ class Logitech(Protocol):
             payload = b"\x00\xC1" + struct.pack("B", modifiers) + b"\x00" + struct.pack("B", scan_code) + 4 * b"\x00"
         else:
             # generate encrypted payload
-            ref = KEYUP_REF.replace(":", "").decode("hex")
+            ref = bytes.fromhex(KEYUP_REF.replace(":", ""))
             idx = 8
             modidx = 2
             payload = ref
-            payload = payload[0:idx] + chr(scan_code ^ ord(ref[idx])) + payload[idx+1:]
-            payload = payload[0:modidx] + chr(modifiers ^ ord(ref[modidx])) + payload[modidx+1:]
+            payload = payload[0:idx] + chr(scan_code ^ ref[idx]) + payload[idx+1:]
+            payload = payload[0:modidx] + chr(modifiers ^ ref[modidx]) + payload[modidx+1:]
 
         # Calculate and append checksum
         checksum = 0
