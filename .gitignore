@@ -1,5 +1,6 @@
 bin/
 scratch/
+.idea/
 *.html
 *.pyc
 *.grc
