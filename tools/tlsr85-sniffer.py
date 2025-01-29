@@ -8,9 +8,9 @@ import time
 
 from binascii import unhexlify
 from lib import common
-from tools.devices.TLSR85.tlsr85 import Tlsr85
-from tools.devices.TLSR85.tlsr85_keyboard import Tlsr85Keyboard
-from tools.devices.TLSR85.tlsr85_mouse import Tlsr85Mouse
+from devices.TLSR85.tlsr85 import Tlsr85
+from devices.TLSR85.tlsr85_keyboard import Tlsr85Keyboard
+from devices.TLSR85.tlsr85_mouse import Tlsr85Mouse
 
 # TODO add flags (shift, alt, win, ...)
 SCANCODE = {
@@ -100,7 +100,7 @@ while True:
 
         if found_address == trust_keyboard.keyboard_address:
             packet = trust_keyboard.parse_packet(value)
-            if trust_keyboard.check_crc(packet["payload"], packet["crc"]):
+            if trust_keyboard.check_crc(packet["crc"], packet["payload"]):
                 print(f"Keyboard packet\tCHANNEL : {channels[channel_index]}\n")
                 for items in packet["array"]:
                     if items in SCANCODE:

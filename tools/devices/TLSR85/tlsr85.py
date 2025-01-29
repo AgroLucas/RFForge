@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from tools.lib import common
+from lib import common
 
 
 class Tlsr85(ABC):
