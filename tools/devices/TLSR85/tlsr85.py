@@ -19,3 +19,6 @@ class Tlsr85(ABC):
     @abstractmethod
     def parse_packet(self, packet):
         pass
+
+    def calculate_crc(self, crc_input):
+        return self.crc(bytes(crc_input)).to_bytes(2, "big")

