@@ -8,13 +8,13 @@ class Tlsr85(ABC):
     BASE_ADDRESS_LENGTH = 3
     FULL_ADDRESS_LENGTH = 4
 
-    def __init__(self, base_address, crc16):
+    def __init__(self, base_address, crc=None):
         self.base_address = base_address
-        self.crc16 = crc16
+        self.crc = crc
 
     # TODO check the type of parameters
     def check_crc(self, expected_crc, crc_input):
-        return f"{self.crc16(bytes(crc_input)):04x}" == bytes(expected_crc).hex()
+        return f"{self.crc(bytes(crc_input)):04x}" == bytes(expected_crc).hex()
 
     @abstractmethod
     def parse_packet(self, packet):
