@@ -1,6 +1,6 @@
 import crcmod
 
-from tlsr85 import Tlsr85
+from devices.TLSR85.tlsr85 import Tlsr85
 
 
 class Tlsr85Mouse(Tlsr85):

@@ -101,7 +101,8 @@ while True:
     if len(value) >= Tlsr85.BASE_ADDRESS_LENGTH:
         # TODO check if base address then check for specific address
         found_base_address = bytes(value[:Tlsr85.BASE_ADDRESS_LENGTH]).hex()
-        if found_base_address == trust_dongle.base_address:
+        print(found_base_address)
+        if found_base_address == trust_dongle.base_address.replace(':', ''):
             print("Dongle ACK")
         # found_specific_address = bytes(value[Tlsr85.BASE_ADDRESS_LENGTH:Tlsr85.FULL_ADDRESS_LENGTH]).hex()
         #
