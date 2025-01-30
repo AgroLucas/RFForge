@@ -6,16 +6,16 @@ from devices.TLSR85.tlsr85 import Tlsr85
 
 # TODO add every scancode
 class Tlsr85KeyboardScancode(Enum):
-    NUM_1 = "59"
-    NUM_2 = "5A"
-    NUM_3 = "5B"
-    NUM_4 = "5C"
-    NUM_5 = "5D"
-    NUM_6 = "5E"
-    NUM_7 = "5F"
-    NUM_8 = "60"
-    NUM_9 = "61"
-    NUM_0 = "62"
+    NUM_1 = 0x59
+    NUM_2 = 0x5A
+    NUM_3 = 0x5B
+    NUM_4 = 0x5C
+    NUM_5 = 0x5D
+    NUM_6 = 0x5E
+    NUM_7 = 0x5F
+    NUM_8 = 0x60
+    NUM_9 = 0x61
+    NUM_0 = 0x62
 
 
 class Tlsr85Keyboard(Tlsr85):
@@ -57,9 +57,12 @@ class Tlsr85Keyboard(Tlsr85):
 
     # TODO make it work with multiple scancodes at the same time, currently only the first scancode works (likely flag somewhere to change ?)
     def build_array(self, scancodes):
-        array = ""
+        array = b""
         for i in range(len(scancodes)):
+            if i == 6 :
+                break
             if scancodes[i] in Tlsr85KeyboardScancode:
-                array += scancodes[i].value
-        array += "00" * (6 - len(scancodes))
-        return bytes.fromhex(array)
+                array += scancodes[i].value.to_bytes(1, "big")
+        array += unhexlify("00" * (6 - len(scancodes)))
+        return array
+    

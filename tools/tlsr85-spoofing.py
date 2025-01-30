@@ -36,7 +36,7 @@ attack = [
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_1]),
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_2]),
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_3]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_0]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_4]),
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_5])
     ]
 
