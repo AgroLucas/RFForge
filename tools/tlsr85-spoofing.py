@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Dummy keylogger for the Trust keyboard, also detects Trust mouse but doesn't parse it yet
-# Address of keyboard and mouse are hardcoded
+# Dummy spoofer for TLSR85 based devices
+# Address of keyboard is hardcoded
 
 import time
 

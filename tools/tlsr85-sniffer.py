@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Dummy keylogger for the Trust keyboard, also detects Trust mouse but doesn't parse it yet
+# Dummy keylogger for TLSR85 based devices, also detects Trust mouse but doesn't parse it yet
+# Currently has a low capture rate for the keyboard packets
 # Address of keyboard and mouse are hardcoded
 
 import time
@@ -12,7 +13,7 @@ from devices.TLSR85.tlsr85 import Tlsr85
 from devices.TLSR85.tlsr85_keyboard import Tlsr85Keyboard
 from devices.TLSR85.tlsr85_mouse import Tlsr85Mouse
 
-# TODO add flags (shift, alt, win, ...)
+# TODO put in TLSR85 keyboard
 SCANCODE = {
     "20": "a",
     "26": "z",
