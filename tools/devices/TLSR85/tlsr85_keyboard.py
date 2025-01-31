@@ -22,10 +22,11 @@ class Tlsr85Keyboard(Tlsr85):
     # TODO parse modifiers (shift, alt, ctrl, ...)
     def parse_packet(self, packet):
         p = packet[:self.packet_size]
-        return {"address": p[:super().FULL_ADDRESS_LENGTH],
-                "payload" : p[:-self.crc_size],
-                "array" : [str(item) for item in p[-(6+self.crc_size):-self.crc_size]],
-                "crc" : p[-self.crc_size:]
+        return {"address": p[:super().FULL_ADDRESS_LENGTH].hex(),
+                "payload" : p[:-self.crc_size].hex(),
+                "sequence number" : p[10:11].hex(),
+                "array" : [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
+                "crc" : p[-self.crc_size:].hex()
                 }
 
 
@@ -50,7 +51,6 @@ class Tlsr85Keyboard(Tlsr85):
         return flags.to_bytes(2, "big")
     
 
-    # TODO make it work with multiple scancodes at the same time, currently only the first scancode works (likely flag somewhere to change ?)
     def build_array(self, scancodes):
         array = b""
         for i in range(len(scancodes)):
@@ -63,7 +63,6 @@ class Tlsr85Keyboard(Tlsr85):
     
     
 
-# TODO add support for 'key press' and 'multiple keys'
 class Tlsr85KeyboardModifiers(Enum):
     MODIFIER_NONE           = 0
     MODIFIER_CONTROL_LEFT   = 1 << 0
@@ -74,6 +73,8 @@ class Tlsr85KeyboardModifiers(Enum):
     MODIFIER_SHIFT_RIGHT    = 1 << 5
     MODIFIER_ALT_RIGHT      = 1 << 6
     MODIFIER_GUI_RIGHT      = 1 << 7
+    MODIFIER_KEY_PRESSED    = 1 << 8
+    MODIFIER_MULTIPLE_KEY   = 1 << 9
 
 
 # TODO adapt scancodes for Belgian keyboard
