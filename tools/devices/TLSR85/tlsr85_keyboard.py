@@ -19,14 +19,25 @@ class Tlsr85Keyboard(Tlsr85):
         self.sequence_number = 0
 
 
-    # TODO parse modifiers (shift, alt, ctrl, ...)
     def parse_packet(self, packet):
         p = packet[:self.packet_size]
-        return {"address": p[:super().FULL_ADDRESS_LENGTH].hex(),
-                "payload" : p[:-self.crc_size].hex(),
+        modifiers = int.from_bytes(p[12:14], "big")
+        return {"address":          p[:super().FULL_ADDRESS_LENGTH].hex(),
+                "payload" :         p[:-self.crc_size].hex(),
                 "sequence number" : p[10:11].hex(),
-                "array" : [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
-                "crc" : p[-self.crc_size:].hex()
+                "array" :           [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
+                "crc" :             p[-self.crc_size:].hex(),
+                "modifiers" : {
+                    "is left ctrl" :            (modifiers >> 0) & 1,
+                    "is left shift" :           (modifiers >> 1) & 1,
+                    "is left alt" :             (modifiers >> 2) & 1,
+                    "is left gui" :             (modifiers >> 3) & 1,
+                    "is right ctrl" :           (modifiers >> 4) & 1,
+                    "is right shift" :          (modifiers >> 5) & 1,
+                    "is right alt" :            (modifiers >> 6) & 1,
+                    "is key pressed" :          (modifiers >> 8) & 1,
+                    "is multiple key pressed" : (modifiers >> 9) & 1
+                    }
                 }
 
 
