@@ -8,10 +8,11 @@ from devices.TLSR85.tlsr85 import Tlsr85
 class Tlsr85Keyboard(Tlsr85):
 
 
-    def __init__(self, base_address, keyboard_address, packet_size, crc_poly, crc_init, crc_size):
+    def __init__(self, base_address, keyboard_address, preamble, packet_size, crc_poly, crc_init, crc_size):
         super().__init__(base_address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.keyboard_address = keyboard_address
         self.full_address = base_address + ":" + keyboard_address
+        self.preamble = preamble
         self.packet_size = packet_size
         self.crc_size = crc_size
         self.start_array_index = 6*8
