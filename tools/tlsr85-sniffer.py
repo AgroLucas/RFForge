@@ -67,13 +67,12 @@ SCANCODE = {
 common.init_args('./tlsr85-sniffer.py')
 common.parse_and_init()
 
-trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80",22, 0x11021, 0x24bf, 2)
-trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc",30, 0x11021, 0x24bf, 2)
-# base address for poss : "d5:54:cb"
-# crc init for poss: 0xcb01
+
+trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80", "aa:aa:b5", 22, 0x11021, 0x24bf, 2)
+trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc", "aa:aa:b5", 30, 0x11021, 0x24bf, 2)
+
 
 rate = Tlsr85.RATE
-# common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=rate)
 common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=rate)
 
 # Sweep through the channels
@@ -98,10 +97,9 @@ while True:
 
     value = common.radio.receive_payload()
     if len(value) >= Tlsr85.BASE_ADDRESS_LENGTH:
-        found_base_address = bytes(value[:Tlsr85.BASE_ADDRESS_LENGTH]).hex()
-        if found_base_address == trust_keyboard.base_address.replace(':', ''):
+        found_base_address = value[:Tlsr85.BASE_ADDRESS_LENGTH]
+        if found_base_address == unhexlify(trust_keyboard.base_address.replace(':', '')):    
             found_specific_address = bytes(value[Tlsr85.BASE_ADDRESS_LENGTH:Tlsr85.FULL_ADDRESS_LENGTH]).hex()
-            
             if found_specific_address == trust_keyboard.keyboard_address:
                 packet = trust_keyboard.parse_packet(value)
                 if trust_keyboard.check_crc(packet["crc"], packet["payload"]):

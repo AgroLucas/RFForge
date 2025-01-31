@@ -21,7 +21,7 @@ class Tlsr85Keyboard(Tlsr85):
     def parse_packet(self, packet):
         p = packet[:self.packet_size]
         modifiers = int.from_bytes(p[12:14], "big")
-        return {"address":          p[:super().FULL_ADDRESS_LENGTH].hex(),
+        return {"address" :         p[:self.FULL_ADDRESS_LENGTH].hex(),
                 "payload" :         p[:-self.crc_size].hex(),
                 "sequence number" : p[10:11].hex(),
                 "array" :           [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
