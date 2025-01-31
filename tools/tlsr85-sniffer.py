@@ -105,6 +105,7 @@ while True:
                 packet = trust_keyboard.parse_packet(value)
                 if trust_keyboard.check_crc(packet["crc"], packet["payload"]):
                     print(f"Keyboard packet\tCHANNEL : {channels[channel_index]}\n")
+                    print(packet["array"])
                     for items in packet["array"]:
                         if items in SCANCODE:
                             entered_string += SCANCODE[items]

