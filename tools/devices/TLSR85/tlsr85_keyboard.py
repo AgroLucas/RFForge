@@ -15,7 +15,6 @@ class Tlsr85Keyboard(Tlsr85):
         self.preamble = preamble
         self.packet_size = packet_size
         self.crc_size = crc_size
-        self.start_array_index = 6*8
         self.sequence_number = 0
 
 
