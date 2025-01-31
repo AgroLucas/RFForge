@@ -28,7 +28,6 @@ class Tlsr85Keyboard(Tlsr85):
                 }
 
 
-    # TODO add support for modifiers
     def build_packet(self, scancodes=[], modifiers=[]):
         address = unhexlify(self.full_address.replace(':', ''))
         beginning_payload = b"\x79\x51\x80\x02\x25\x05"
@@ -61,6 +60,8 @@ class Tlsr85Keyboard(Tlsr85):
         array += unhexlify("00" * (6 - len(scancodes)))
         return array
     
+    
+
 # TODO add support for 'key press' and 'multiple keys'
 class Tlsr85KeyboardModifiers(Enum):
     MODIFIER_NONE           = 0
@@ -74,6 +75,7 @@ class Tlsr85KeyboardModifiers(Enum):
     MODIFIER_GUI_RIGHT      = 1 << 7
 
 
+# TODO adapt scancodes for Belgian keyboard
 class Tlsr85KeyboardScancode(Enum):
 
     KEY_NONE                = 0x00
@@ -89,7 +91,7 @@ class Tlsr85KeyboardScancode(Enum):
     KEY_J                   = 0x0D
     KEY_K                   = 0x0E
     KEY_L                   = 0x0F
-    KEY_M                   = 0x10
+    KEY_M                   = 0x33
     KEY_N                   = 0x11
     KEY_O                   = 0x12
     KEY_P                   = 0x13
@@ -127,7 +129,7 @@ class Tlsr85KeyboardScancode(Enum):
     KEY_SEMICOLON           = 0x33
     KEY_APOSTROPHE          = 0x34
     KEY_GRAVE               = 0x35
-    KEY_COMMA               = 0x36
+    KEY_COMMA               = 0x10
     KEY_PERIOD              = 0x37
     KEY_SLASH               = 0x38
     KEY_CAPS_LOCK           = 0x39

