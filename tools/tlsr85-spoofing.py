@@ -11,6 +11,7 @@ from lib import common
 from devices.TLSR85.tlsr85 import Tlsr85
 from devices.TLSR85.tlsr85_keyboard import *
 from devices.TLSR85.tlsr85_mouse import *
+from devices.TX.tx_mouse import Tx_mouse
 
 
 common.init_args('./tlsr85-spoofing.py')
@@ -105,7 +106,8 @@ preamble = unhexlify(trust_keyboard.preamble.replace(':', ''))
 
 # spoof(attack, address, preamble, trust_keyboard.CHANNELS, trust_keyboard.RATE)
 
-trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc", "aa:aa:b5", 30, 0x11021, 0x24bf, 2)
+# trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc", "aa:aa:aa:b5", 30, 0x11021, 0x24bf, 2)
+# sniff(trust_keyboard, trust_mouse)
 
-sniff(trust_keyboard, trust_mouse)
-
+tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
+tx_mouse.sniff()
