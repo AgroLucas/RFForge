@@ -71,12 +71,10 @@ def sniff(keyboard, mouse):
                         last_tune = time.time()
                 
                 elif found_specific_address == byte_mouse_address:
-                    # TODO fix CRC error
                     packet = mouse.parse_packet(bytes(value))
                     if mouse.check_crc(packet["crc"], packet["payload"]):
-                        print(f"Mouse packet\tCHANNEL : {channels[channel_index]}\n")
+                        print(f"Mouse packet\tCHANNEL : {channels[channel_index]}")
                         print(packet)
-                        # TODO display the action of mouse
                         last_tune = time.time() 
 
 

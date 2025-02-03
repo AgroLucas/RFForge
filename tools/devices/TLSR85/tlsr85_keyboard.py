@@ -87,11 +87,10 @@ class Tlsr85KeyboardModifiers(Enum):
     MODIFIER_MULTIPLE_KEY   = 1 << 9
 
 
-# TODO adapt scancodes for Belgian keyboard
-class Tlsr85KeyboardScancode(Enum):
 
+class Tlsr85KeyboardScancode(Enum):
     KEY_NONE                = 0x00
-    KEY_A                   = 0x04
+    KEY_A                   = 0x14
     KEY_B                   = 0x05
     KEY_C                   = 0x06
     KEY_D                   = 0x07
@@ -107,16 +106,16 @@ class Tlsr85KeyboardScancode(Enum):
     KEY_N                   = 0x11
     KEY_O                   = 0x12
     KEY_P                   = 0x13
-    KEY_Q                   = 0x14
+    KEY_Q                   = 0x04
     KEY_R                   = 0x15
     KEY_S                   = 0x16
     KEY_T                   = 0x17
     KEY_U                   = 0x18
     KEY_V                   = 0x19
-    KEY_W                   = 0x1A
+    KEY_W                   = 0x1D
     KEY_X                   = 0x1B
     KEY_Y                   = 0x1C
-    KEY_Z                   = 0x1D
+    KEY_Z                   = 0x1A
     KEY_1                   = 0x1E
     KEY_2                   = 0x1F
     KEY_3                   = 0x20
@@ -127,23 +126,22 @@ class Tlsr85KeyboardScancode(Enum):
     KEY_8                   = 0x25
     KEY_9                   = 0x26
     KEY_0                   = 0x27
-    KEY_RETURN              = 0x28
+    KEY_COMMA               = 0x10
+    KEY_KEYPAD_ENTER        = 0x28
     KEY_ESCAPE              = 0x29
     KEY_BACKSPACE           = 0x2A
     KEY_TAB                 = 0x2B
     KEY_SPACE               = 0x2C
-    KEY_MINUS               = 0x2D
-    KEY_EQUAL               = 0x2E
-    KEY_BRACKET_LEFT        = 0x2F
-    KEY_BRACKET_RIGHT       = 0x30
-    KEY_BACKSLASH           = 0x31
-    KEY_EUROPE_1            = 0x32
-    KEY_SEMICOLON           = 0x33
-    KEY_APOSTROPHE          = 0x34
-    KEY_GRAVE               = 0x35
-    KEY_COMMA               = 0x10
-    KEY_PERIOD              = 0x37
-    KEY_SLASH               = 0x38
+    KEY_BRACKET_RIGHT       = 0x2D
+    KEY_MINUS               = 0x2E
+    KEY_CARET               = 0x2F
+    KEY_DOLLAR              = 0x30
+    KEY_MICRO               = 0x31
+    KEY_U_GRAVE             = 0x34
+    KEY_SQUARED             = 0x35
+    KEY_SEMICOLON           = 0x36
+    KEY_COLON               = 0x37
+    KEY_EQUAL               = 0x38
     KEY_CAPS_LOCK           = 0x39
     KEY_F1                  = 0x3A
     KEY_F2                  = 0x3B
@@ -186,19 +184,18 @@ class Tlsr85KeyboardScancode(Enum):
     KEY_KEYPAD_8            = 0x60
     KEY_KEYPAD_9            = 0x61
     KEY_KEYPAD_0            = 0x62
-    KEY_KEYPAD_DECIMAL      = 0x63
-    KEY_EUROPE_2            = 0x64
-    KEY_APPLICATION         = 0x65
-    KEY_POWER               = 0x66
-    KEY_KEYPAD_EQUAL        = 0x67
-    KEY_F13                 = 0x68
-    KEY_F14                 = 0x69
-    KEY_F15                 = 0x6A
-    KEY_CONTROL_LEFT        = 0xE0
-    KEY_SHIFT_LEFT          = 0xE1
-    KEY_ALT_LEFT            = 0xE2
-    KEY_GUI_LEFT            = 0xE3
-    KEY_CONTROL_RIGHT       = 0xE4
-    KEY_SHIFT_RIGHT         = 0xE5
-    KEY_ALT_RIGHT           = 0xE6
-    KEY_GUI_RIGHT           = 0xE7
+    KEY_KEYPAD_POINT        = 0x63
+    KEY_MENU                = 0x65
+    KEY_MUSIC               = 0xAA
+    KEY_STOP                = 0xB1
+    KEY_BEFORE              = 0xAF
+    KEY_AFTER               = 0xAE
+    KEY_SOUND_DOWN          = 0xB4
+    KEY_SOUND_UP            = 0xB3
+    KEY_MUTE                = 0xB2
+    KEY_HOME                = 0xA4
+    KEY_SEARCH              = 0xA3
+    KEY_PARAMETER           = 0xC
+    KEY_LOCK                = 0xF
+    KEY_FULLSCREEN          = 0xAC
+    KEY_FOLDER              = 0x8
