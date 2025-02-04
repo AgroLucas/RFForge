@@ -49,6 +49,9 @@ class Tx(ABC):
         for i in range(len(self.CHANNELS)):
             common.radio.set_channel(self.CHANNELS[i])
             for payload in attack:
-                for _ in range(20):
-                    common.radio.transmit_payload_generic(payload=self.PREAMBLE+payload, address=address)
-                    time.sleep(0.0001)
+                if callable(payload):
+                    payload() # in case we want a delay
+                else:
+                    for _ in range(10):
+                        common.radio.transmit_payload_generic(payload=self.PREAMBLE+payload, address=address)
+                        time.sleep(0.000001)
