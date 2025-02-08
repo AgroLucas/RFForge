@@ -12,6 +12,7 @@ from devices.TX.tx_mouse import Tx_mouse
 from devices.TX.tx_keyboard import Tx_Keyboard
 from devices.keyboard import * 
 from devices.mouse import * 
+from devices.Rapoo.rapoo_mouse import *
 
 
 common.init_args('./main.py')
@@ -59,7 +60,10 @@ attack = [
     *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-tx_keyboard.spoof(attack)
+# tx_keyboard.spoof(attack)
 
 #m = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
 #tx_mouse.spoof(m)
+
+rapoo_mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
+rapoo_mouse.sniff()
