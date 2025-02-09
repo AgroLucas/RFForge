@@ -5,3 +5,6 @@ scratch/
 *.pyc
 *.grc
 *.packets
+
+__pycache__/
+*.pyc
