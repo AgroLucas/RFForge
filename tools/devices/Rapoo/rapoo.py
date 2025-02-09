@@ -52,7 +52,7 @@ class Rapoo(ABC):
                 if callable(payload):
                     payload() # in case we want a delay
                 else:
-                    for _ in range(10):
+                    for _ in range(5):
                         common.radio.transmit_payload_generic(payload=self.PREAMBLE+payload, address=address)
                         time.sleep(0.000001)
                         

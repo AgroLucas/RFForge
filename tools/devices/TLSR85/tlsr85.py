@@ -45,7 +45,7 @@ class Tlsr85(ABC):
         channel_index = 0
         common.radio.set_channel(self.CHANNELS[channel_index]) # Set channel here to prevent USBError (somehow)
         common.radio.enter_promiscuous_mode_generic(address, rate=self.RATE)
-        for payload in attack:
+        for payload in attack: # send payload multiple time on every channels
             if callable(payload):
                 payload() # in case we want a delay
             else:

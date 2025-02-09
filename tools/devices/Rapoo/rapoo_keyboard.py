@@ -42,16 +42,27 @@ class Rapoo_Keyboard(Rapoo):
         return chars
 
 
-    def build_packet(self, scancodes=[], modifiers=[]):
-        pass
-    
-
-    def build_flags(self, modifiers):
-        pass
+    def build_packet(self, scancodes=[]):
+        address = unhexlify(self.address.replace(':', ''))
+        beginning_payload = b"\xdc\x69\x06"
+        sequence_number = self.sequence_number.to_bytes(1, "big")
+        self.sequence_number = (self.sequence_number + 1) % 255
+        padding = b"\x01\x02\xea\x3a\x16"
+        array = self.build_array(scancodes)
+        crc = self.calculate_crc(address+beginning_payload+sequence_number+padding+array)
+        
+        return address+beginning_payload+sequence_number+padding+array+crc
     
 
     def build_array(self, scancodes):
-        pass
+        array = b""
+        for i in range(len(scancodes)):
+            if i == 6 :
+                break
+            if scancodes[i] in KeyboardScancode:
+                array += scancodes[i].value.to_bytes(1, "big")
+        array += unhexlify("00" * (6 - len(scancodes)))
+        return array
     
 
     def sniff(self):
@@ -87,3 +98,4 @@ class Rapoo_Keyboard(Rapoo):
                             entered_string += self.scancode_to_char(packet["array"])
                             print(entered_string)
                             last_tune = time.time()
+    

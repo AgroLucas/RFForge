@@ -46,7 +46,7 @@ class Tx(ABC):
         common.radio.set_channel(self.CHANNELS[channel_index]) # Set channel here to prevent USBError (somehow)
         common.radio.enter_promiscuous_mode_generic(address, rate=self.RATE)
 
-        for i in range(len(self.CHANNELS)):
+        for i in range(len(self.CHANNELS)): # send whole attack multiple time on every channels
             common.radio.set_channel(self.CHANNELS[i])
             for payload in attack:
                 if callable(payload):
