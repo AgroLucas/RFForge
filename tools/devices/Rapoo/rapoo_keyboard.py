@@ -3,8 +3,6 @@ from binascii import unhexlify
 
 from devices.Rapoo.rapoo import Rapoo
 from devices.keyboard import * 
-import time
-from lib import common
 
 
 class Rapoo_Keyboard(Rapoo):
@@ -16,13 +14,13 @@ class Rapoo_Keyboard(Rapoo):
 
 
     def parse_packet(self, packet):
-        p = packet[:self.PACKET_SIZE]
-        return {"address" :         p[:self.ADDRESS_LENGTH].hex(),
-                "payload" :         p[:-self.CRC_SIZE].hex(),
+        p = packet[:self.packet_size]
+        return {"address" :         p[:self.address_length].hex(),
+                "payload" :         p[:-self.crc_size].hex(),
                 "packet type" :     p[6:7].hex(),
                 "sequence number":  p[7:8].hex(),
-                "array":            [hex(item) for item in p[-(6+self.CRC_SIZE):-self.CRC_SIZE]],
-                "crc" :             p[-self.CRC_SIZE:].hex()
+                "array":            [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
+                "crc" :             p[-self.crc_size:].hex()
                 }
     
 
@@ -65,37 +63,11 @@ class Rapoo_Keyboard(Rapoo):
         return array
     
 
-    def sniff(self):
-        dwell = 200
-        dwell_time = dwell / 1000
+    def handle_sniffed_packet(self, packet, channel):
+        if self.check_crc(packet["crc"], packet["payload"]):
+            if packet["packet type"] == "06":
+                print(f"Rapoo Keyboard Packet\tCHANNEL : {channel}")
+                print(packet)
+                print(self.scancode_to_char(packet["array"]))
 
-        channels = self.CHANNELS
-        #channels = range(0,84) # for fuzzing
-        byte_address = unhexlify(self.address.replace(':', ''))
-
-        channel_index = 0
-        common.radio.set_channel(channels[channel_index]) # Set channel here to prevent USBError (somehow)
-        common.radio.enter_promiscuous_mode_generic(unhexlify(self.address.replace(':', '')), rate=self.RATE)
-        last_tune = time.time()
-        entered_string = ""
-
-        while True:
-            # Increment the channel after dwell_time
-            if len(channels) > 1 and time.time() - last_tune > dwell_time:
-                channel_index = (channel_index + 1) % (len(channels))
-                common.radio.set_channel(channels[channel_index])
-                last_tune = time.time()
-
-            value = common.radio.receive_payload()
-            if len(value) >= self.ADDRESS_LENGTH:
-                found_base_address = bytes(value[:self.ADDRESS_LENGTH])
-                if found_base_address == byte_address:
-                    packet = self.parse_packet(bytes(value))
-                    if self.check_crc(packet["crc"], packet["payload"]):
-                        if packet["packet type"] == "06":
-                            print(f"Rapoo Keyboard Packet\tCHANNEL : {channels[channel_index]}")
-                            print(packet)
-                            entered_string += self.scancode_to_char(packet["array"])
-                            print(entered_string)
-                            last_tune = time.time()
     

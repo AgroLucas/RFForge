@@ -1,7 +1,5 @@
 import crcmod
-from lib import common
 from binascii import unhexlify
-import time
 
 from devices.TX.tx import Tx
 from devices.keyboard import * 
@@ -12,10 +10,22 @@ class Tx_Keyboard(Tx):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
 
 
-    # TODO
     def parse_packet(self, packet):
-        p = packet[:self.PACKET_SIZE]
-        pass
+        p = packet[:self.packet_size]
+
+        sequence_int = int.from_bytes(p[4:5], "big")
+        sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
+        status_int = int.from_bytes(p[5:6], "big")
+        status = hex((((status_int >> 2) & 1) << 1) | ((status_int >> 1) & 1))
+        return {
+            "address"           : p[:self.address_length].hex(),
+            "payload"           : p[:-self.crc_size].hex(),
+            "sequence_number"   : sequence_number,
+            "status_number"     : status,
+            "flags"             : p[6:7].hex(),
+            "array"             : p[7:12].hex(),
+            "crc"               : p[-self.crc_size:].hex()
+        }
 
 
     def build_packet(self, scancodes=[], modifiers=[]):
@@ -50,13 +60,15 @@ class Tx_Keyboard(Tx):
 
 
     def build_flags(self, modifiers):
-        flags = 0 # key press is off by default
+        flags = 0
         for modifier in modifiers:
             if modifier in KeyboardModifiers:
                 flags |= modifier.value
         return flags.to_bytes(1, "big")
     
 
-    # TODO
-    def sniff(self):
-        pass
+    def handle_sniffed_packet(self, packet, channel):
+        if self.check_crc(packet["crc"], packet["payload"]):
+            print(f"TX Keyboard Packet\tCHANNEL : {channel}")
+            print(packet)
+            print(self.scancode_to_char(packet["array"]))

