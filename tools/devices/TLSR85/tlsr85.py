@@ -1,5 +1,3 @@
-from binascii import unhexlify
-import time
 from lib import common
 from devices.device import Device
 
