@@ -1,3 +1,22 @@
+"""
+  Copyright (C) 2016 Bastille Networks
+  Copyright (C) 2019 Matthias Deeg, SySS GmbH
+  Copyright (C) 2025 Lucas Agro
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import crcmod
 from binascii import unhexlify
 
@@ -5,7 +24,12 @@ from devices.TLSR85.tlsr85 import Tlsr85
 from devices.keyboard import * 
 
 
-class Tlsr85Keyboard(Tlsr85):
+class Tlsr85_Keyboard(Tlsr85):
+    """Represents a TLSR85 based keyboard.
+
+    Successfully tested with the Trust ODY II and the Poss PSKEY530BK.
+    """
+
     PACKET_SIZE = 22
 
 
@@ -37,7 +61,16 @@ class Tlsr85Keyboard(Tlsr85):
                 }
     
 
-    def scancode_to_char(self, array, modifiers):
+    def scancodes_to_string(self, array, modifiers):
+        """Convert an list of scancodes and modifiers into a string.
+
+        Args:
+            array (list[str]): A list containing USB HID scancode in hexadecimal string.
+            modifiers (bytes): A byte containing the modifiers' flags.
+        
+        Returns:
+            str: A string containing the characters from the array by taking into account the modifiers.
+        """
         is_key_pressed = (modifiers >> 8) & 1
         if not is_key_pressed:
             return ""
@@ -55,6 +88,15 @@ class Tlsr85Keyboard(Tlsr85):
 
 
     def build_packet(self, scancodes=[], modifiers=[]):
+        """Build a raw packet based on the scancodes and modifiers given.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the packet.
+            modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the packet.
+
+        Returns:
+            bytes: A raw packet in bytes format (it does not contain the preamble).
+        """
         address = unhexlify(self.address.replace(':', ''))
         beginning_payload = b"\x79\x51\x80\x02\x25\x05"
         sequence_number = self.sequence_number.to_bytes(1, "big")
@@ -68,6 +110,14 @@ class Tlsr85Keyboard(Tlsr85):
     
 
     def build_flags(self, modifiers):
+        """Build the flag byte based on the modifiers given.
+
+        Args: 
+            modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the byte.
+        
+        Returns:
+            bytes: A 2 bytes value containing the given modifiers.
+        """
         flags = 256 # key press is on by default
         for modifier in modifiers:
             if modifier in KeyboardModifiers:
@@ -76,6 +126,16 @@ class Tlsr85Keyboard(Tlsr85):
     
 
     def build_array(self, scancodes):
+        """Build the array based on the scancodes given.
+
+        An array is a certain number of bytes (often 6) specified by USB HID that represents the pressed characters of a keyboard.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the array.       
+        
+        Returns:
+            bytes: The raw array of a packet including exactly 6 scancodes in bytes format.
+        """
         array = b""
         for i in range(len(scancodes)):
             if i == 6 :
@@ -90,4 +150,4 @@ class Tlsr85Keyboard(Tlsr85):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"TLSR85 Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
-            print(self.scancode_to_char(packet["array"], packet["raw_modifiers"]))
+            print(self.scancodes_to_string(packet["array"], packet["raw_modifiers"]))

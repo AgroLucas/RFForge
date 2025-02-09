@@ -1,3 +1,22 @@
+"""
+  Copyright (C) 2016 Bastille Networks
+  Copyright (C) 2019 Matthias Deeg, SySS GmbH
+  Copyright (C) 2025 Lucas Agro
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import crcmod
 from binascii import unhexlify
 
@@ -5,6 +24,10 @@ from devices.TX.tx import Tx
 from devices.mouse import *
 
 class Tx_mouse(Tx):
+    """Represents a TX mouse.
+    
+    Successfully tested with the ms6-TXn-wh.
+    """
 
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
@@ -27,10 +50,21 @@ class Tx_mouse(Tx):
             "x"                 : p[8:10].hex(),
             "y"                 : p[10:12].hex(),
             "crc"               : p[-self.crc_size:].hex()
-        }
+            }
 
 
     def build_packet(self, clicks, x_move="0000", y_move="0000", scrolling_move="00"):
+        """Build 2 raw packets. One key on, one key off.
+
+        Args: 
+            clicks (list[MouseClickType]): A list of MouseClickType to include in the first packet.
+            x_move (str): The movement of the mouse in the x axis in hexadecimal string.
+            y_move (str): The movement of the mouse in the y axis in hexadecimal string.
+            scrolling_move (str): The movement of the wheel in signed hexadecimal string.
+
+        Returns:
+            list[bytes]: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a click release (they does not contain the preamble).
+        """
         packets = []
         address = unhexlify(self.address.replace(':', ''))
 
@@ -56,6 +90,14 @@ class Tx_mouse(Tx):
     
 
     def build_clicks(self, clicks):
+        """Build the click byte based on the clicks given.
+
+        Args: 
+            clicks (list[MouseClickType]): A list containing the pressed clicks.       
+        
+        Returns:
+            bytes: The byte containing the correct value based on the pressed clicks.
+        """
         click_result = 0
         for click in clicks:
             if click in MouseClickType:

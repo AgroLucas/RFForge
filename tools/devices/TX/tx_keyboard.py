@@ -1,3 +1,22 @@
+"""
+  Copyright (C) 2016 Bastille Networks
+  Copyright (C) 2019 Matthias Deeg, SySS GmbH
+  Copyright (C) 2025 Lucas Agro
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import crcmod
 from binascii import unhexlify
 
@@ -5,6 +24,10 @@ from devices.TX.tx import Tx
 from devices.keyboard import * 
 
 class Tx_Keyboard(Tx):
+    """Represents a TX keyboard.
+    
+    Successfully tested with the ms6-TXn-wH mouse.
+    """
 
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
@@ -25,10 +48,19 @@ class Tx_Keyboard(Tx):
             "flags"             : p[6:7].hex(),
             "array"             : p[7:12].hex(),
             "crc"               : p[-self.crc_size:].hex()
-        }
+            }
 
 
     def build_packet(self, scancodes=[], modifiers=[]):
+        """Build 2 raw packets. One key on, one key off.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the first packet.
+            modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the first packet.
+
+        Returns:
+            bytes: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a key release (they does not contain the preamble).
+        """
         packets = []
         address = unhexlify(self.address.replace(':', ''))
 
@@ -49,6 +81,16 @@ class Tx_Keyboard(Tx):
     
     
     def build_array(self, scancodes):
+        """Build the array based on the scancodes given.
+
+        An array is a certain number of bytes (often 6) specified by USB HID that represents the pressed characters of a keyboard.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the array.       
+        
+        Returns:
+            bytes: The raw array of a packet including exactly 5 scancodes in bytes format.
+        """
         array = b""
         for i in range(len(scancodes)):
             if i == 6 :
@@ -60,6 +102,14 @@ class Tx_Keyboard(Tx):
 
 
     def build_flags(self, modifiers):
+        """Build the flag byte based on the modifiers given.
+
+        Args: 
+            modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the byte.
+        
+        Returns:
+            bytes: A 1 byte value containing the given modifiers.
+        """
         flags = 0
         for modifier in modifiers:
             if modifier in KeyboardModifiers:

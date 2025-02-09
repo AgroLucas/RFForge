@@ -1,13 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Testing file for sniffing and spoofing wireless devices
+"""
+  Copyright (C) 2016 Bastille Networks
+  Copyright (C) 2019 Matthias Deeg, SySS GmbH
+  Copyright (C) 2025 Lucas Agro
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+"""Testing file for sniffing and spoofing wireless devices.
+
+"""
 
 import time
 
 from lib import common
-from devices.TLSR85.tlsr85_keyboard import Tlsr85Keyboard
-from devices.TLSR85.tlsr85_mouse import Tlsr85Mouse
+from devices.TLSR85.tlsr85_keyboard import Tlsr85_Keyboard
+from devices.TLSR85.tlsr85_mouse import Tlsr85_Mouse
 from devices.TX.tx_mouse import Tx_mouse
 from devices.TX.tx_keyboard import Tx_Keyboard
 from devices.keyboard import * 
@@ -20,8 +41,8 @@ common.init_args('./main.py')
 common.parse_and_init()
 
 
-trust_keyboard = Tlsr85Keyboard("4a:b4:cb:80", "aa:aa:b5", 0x11021, 0x24bf)
-# poss_keyboard = Tlsr85Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
+trust_keyboard = Tlsr85_Keyboard("4a:b4:cb:80", "aa:aa:b5", 0x11021, 0x24bf)
+# poss_keyboard = Tlsr85_Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
 
 
 attack = [
@@ -41,7 +62,7 @@ attack = [
 
 #trust_keyboard.spoof(attack)
 
-trust_mouse = Tlsr85Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
+trust_mouse = Tlsr85_Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
 #trust_keyboard.sniff()
 
 tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)

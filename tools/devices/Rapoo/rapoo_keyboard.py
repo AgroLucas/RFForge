@@ -1,3 +1,22 @@
+"""
+  Copyright (C) 2016 Bastille Networks
+  Copyright (C) 2019 Matthias Deeg, SySS GmbH
+  Copyright (C) 2025 Lucas Agro
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import crcmod
 from binascii import unhexlify
 
@@ -6,7 +25,10 @@ from devices.keyboard import *
 
 
 class Rapoo_Keyboard(Rapoo):
-
+    """ Represents a Rapoo keyboard.
+    
+    Successfully tested with the E1050 keyboard.
+    """
 
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
@@ -24,7 +46,17 @@ class Rapoo_Keyboard(Rapoo):
                 }
     
 
-    def scancode_to_char(self, array):
+    def scancodes_to_string(self, array):
+        """Convert an list of scancodes into a string.
+
+        Also handles the modifiers (l/r shift and r alt)
+
+        Args:
+            array (list[str]): A list containing USB HID scancode in hexadecimal string.
+        
+        Returns:
+            str: A string containing the characters from the list.
+        """
         modifiers = 0
         shifted = False
         for scancode in array: # grab potential modifiers
@@ -41,6 +73,14 @@ class Rapoo_Keyboard(Rapoo):
 
 
     def build_packet(self, scancodes=[]):
+        """Build a raw packet based on the scancodes given.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the packet.
+
+        Returns:
+            bytes: A raw packet in bytes format (it does not contain the preamble).
+        """
         address = unhexlify(self.address.replace(':', ''))
         beginning_payload = b"\xdc\x69\x06"
         sequence_number = self.sequence_number.to_bytes(1, "big")
@@ -53,6 +93,16 @@ class Rapoo_Keyboard(Rapoo):
     
 
     def build_array(self, scancodes):
+        """Build the array based on the scancodes given.
+
+        An array is a certain number of bytes (often 6) specified by USB HID that represents the pressed characters of a keyboard.
+
+        Args: 
+            scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the array.       
+        
+        Returns:
+            bytes: The raw array of a packet including exactly 6 scancodes in bytes format.
+        """
         array = b""
         for i in range(len(scancodes)):
             if i == 6 :
@@ -68,6 +118,6 @@ class Rapoo_Keyboard(Rapoo):
             if packet["packet type"] == "06":
                 print(f"Rapoo Keyboard Packet\tCHANNEL : {channel}")
                 print(packet)
-                print(self.scancode_to_char(packet["array"]))
+                print(self.scancodes_to_string(packet["array"]))
 
     
