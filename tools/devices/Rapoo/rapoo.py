@@ -4,8 +4,8 @@ import time
 from binascii import unhexlify
 
 class Rapoo(ABC):
-    # Only channels 34, 67 works so far
-    CHANNELS = [34, 43, 56, 67]
+    # Only channels 22, 34, 56, 67, 78 works so far
+    CHANNELS = [22, 34, 43, 56, 67, 78]
     RATE = common.RF_RATE_2M
     ADDRESS_LENGTH = 4
     CRC_SIZE = 2

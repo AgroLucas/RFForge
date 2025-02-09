@@ -127,6 +127,15 @@ class KeyboardScancode(Enum):
     KEY_PARAMETER           = 0xC
     KEY_LOCK                = 0xF
     KEY_FULLSCREEN          = 0xAC
+    # for rapoo
+    KEY_LCTRL               = 0xE0
+    KEY_LSHIFT              = 0xE1
+    KEY_LALT                = 0xE2
+    KEY_LGUI                = 0xE3
+    KEY_RCTRL               = 0xE4
+    KEY_RSHIFT              = 0xE5
+    KEY_RALT                = 0xE6
+
 
     # TODO add <
     SCANCODE_TO_CHAR = {
