@@ -81,7 +81,6 @@ class Tlsr85_Keyboard(Tlsr85):
         if is_multiple_key_pressed:
             chars = ""
             for scancode in array:
-                print(scancode)
                 chars += KeyboardScancode.SCANCODE_TO_CHAR.value.get((int(scancode, 16), modifier), "")
             return chars
         return KeyboardScancode.SCANCODE_TO_CHAR.value.get((int(array[0], 16), modifier), "")

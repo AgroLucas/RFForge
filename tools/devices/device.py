@@ -109,6 +109,7 @@ class Device(ABC):
         """
         dwell_time = 0.2
         channel_index = 0
+        #self.channels = range(0,84) # fuzz channels
         common.radio.set_channel(self.channels[channel_index]) # Set channel here to prevent USBError (somehow)
         common.radio.enter_promiscuous_mode_generic(unhexlify(self.address.replace(':', '')), rate=self.rate)
         last_tune = time.time()
@@ -146,6 +147,6 @@ class Device(ABC):
             else:
                 for i in range(len(self.channels)):
                     common.radio.set_channel(self.channels[i])
-                    for _ in range(30):
+                    for _ in range(15):
                         common.radio.transmit_payload_generic(payload=preamble+payload, address=address)
                         time.sleep(0.00001)
