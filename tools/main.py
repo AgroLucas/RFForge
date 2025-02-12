@@ -37,6 +37,7 @@ from devices.Rapoo.rapoo_mouse import Rapoo_Mouse
 from devices.Rapoo.rapoo_keyboard import Rapoo_Keyboard
 from devices.Edenwood.edenwood_mouse import Edenwood_Mouse
 from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
+from devices.Cherry.cherry_mouse import Cherry_Mouse
 
 
 common.init_args('./main.py')
@@ -150,3 +151,11 @@ attack_edenwood_mouse = [
 
 #edenwood_mouse.spoof(attack_edenwood_mouse)
 #edenwood_keyboard.spoof(attack_edenwood_keyboard) # not perfect, packet with same seq number might get repeated
+
+
+"""
+----------------------------Edenwood----------------------------
+"""
+
+cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
+cherry_mouse.sniff()
