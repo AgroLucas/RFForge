@@ -25,7 +25,7 @@ class Rapoo(Device):
     
     Successfully tested with the Rapoo x1800s desktop set (E1050 + M10).
     """
-    ADDRESS_LENGTH = 4
+    ADDRESS_LENGTH = 7
     CHANNELS = [22, 34, 43, 56, 67, 78]
     RATE = common.RF_RATE_2M
     PACKET_SIZE = 21
