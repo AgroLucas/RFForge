@@ -74,7 +74,7 @@ class Qware_Mouse(Device):
                 }
 
 
-    def build_packet(self, clicks, x_move="0000", y_move="0000", scrolling_move="00"):
+    def build_packet(self, clicks, x_move="00000", y_move="00000", scrolling_move="00"):
         """Build a raw packet.
 
         Args: 
@@ -86,7 +86,18 @@ class Qware_Mouse(Device):
         Returns:
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
-        pass
+        address = unhexlify(self.address.replace(':', ''))
+        padding = b"\xee\x10"
+        sequence_number = (0x68 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
+        self.sequence_number = (self.sequence_number + 1) % 4
+        padding2 = b"\x10"
+        click_type = self.build_clicks(clicks)
+        x = (int(x_move, 16) ^ 0x3b0d6d2af9).to_bytes(5, byteorder="big")
+        y = (int(y_move, 16) ^ 0x518e4cfdc1).to_bytes(5, byteorder="big")
+        scrolling = (int(scrolling_move, 16) ^ 0xbc).to_bytes(1, byteorder="big")
+        crc = self.calculate_crc(address+padding+sequence_number+padding2+click_type+x+scrolling+y)
+
+        return address+padding+sequence_number+padding2+click_type+x+scrolling+y+crc
     
 
     def build_clicks(self, clicks):
@@ -98,7 +109,11 @@ class Qware_Mouse(Device):
         Returns:
             bytes: The byte containing the correct value based on the pressed clicks.
         """
-        pass
+        click_result = 0
+        for click in clicks:
+            if click in MouseClickType:
+                click_result |= click.value
+        return (click_result ^ 0xf5).to_bytes(1, "big")
         
 
     def handle_sniffed_packet(self, packet, channel):
