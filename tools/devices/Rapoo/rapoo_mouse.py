@@ -61,7 +61,6 @@ class Rapoo_Mouse(Rapoo):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        beginning_payload = b"\xdc\x69\x04"
         sequence_number = self.sequence_number.to_bytes(1, "big")
         self.sequence_number = (self.sequence_number + 1) % 255
         padding = b"\x01\x01\x4c\xa2\x2e"
@@ -69,9 +68,9 @@ class Rapoo_Mouse(Rapoo):
         x = unhexlify(x_move)
         y = unhexlify(y_move)
         scrolling = unhexlify(scrolling_move)
-        crc = self.calculate_crc(address+beginning_payload+sequence_number+padding+click_type+x+y+scrolling)
+        crc = self.calculate_crc(address+sequence_number+padding+click_type+x+y+scrolling)
 
-        return address+beginning_payload+sequence_number+padding+click_type+x+y+scrolling+crc
+        return address+sequence_number+padding+click_type+x+y+scrolling+crc
     
 
     def build_clicks(self, clicks):

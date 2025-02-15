@@ -82,14 +82,13 @@ class Rapoo_Keyboard(Rapoo):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        beginning_payload = b"\xdc\x69\x06"
         sequence_number = self.sequence_number.to_bytes(1, "big")
         self.sequence_number = (self.sequence_number + 1) % 255
         padding = b"\x01\x02\xea\x3a\x16"
         array = self.build_array(scancodes)
-        crc = self.calculate_crc(address+beginning_payload+sequence_number+padding+array)
+        crc = self.calculate_crc(address+sequence_number+padding+array)
         
-        return address+beginning_payload+sequence_number+padding+array+crc
+        return address+sequence_number+padding+array+crc
     
 
     def build_array(self, scancodes):
