@@ -89,16 +89,15 @@ class Edenwood_Keyboard(Edenwood):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        packet_type = b"\xbe"
         sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
         self.sequence_number = (self.sequence_number + 1) % 4
         flags = self.build_flags(modifiers)
         array = self.build_array(scancodes)
         padding = b"\x00\x00\x00"
         checksum = self.calculate_checksum(int.from_bytes(flags, "big"), [int(x) for x in array])
-        crc = self.calculate_crc(address+packet_type+sequence_number+flags+array+padding+checksum)
+        crc = self.calculate_crc(address+sequence_number+flags+array+padding+checksum)
         
-        return address+packet_type+sequence_number+flags+array+padding+checksum+crc
+        return address+sequence_number+flags+array+padding+checksum+crc
     
 
     def build_flags(self, modifiers):

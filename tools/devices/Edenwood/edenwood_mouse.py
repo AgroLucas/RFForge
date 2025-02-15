@@ -64,7 +64,6 @@ class Edenwood_Mouse(Edenwood):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        packet_type = b"\xbc"
         sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
         self.sequence_number = (self.sequence_number + 1) % 4
         click_type = self.build_clicks(clicks)
@@ -73,9 +72,9 @@ class Edenwood_Mouse(Edenwood):
         scrolling = unhexlify(scrolling_move)
         padding = b"\x00\x00\x00\x00"
         checksum = self.calculate_checksum(int.from_bytes(click_type, "big"), int.from_bytes(x, "big"), int.from_bytes(y, "big"), int.from_bytes(scrolling, "big"))
-        crc = self.calculate_crc(address+packet_type+sequence_number+click_type+x+y+scrolling+padding+checksum)
+        crc = self.calculate_crc(address+sequence_number+click_type+x+y+scrolling+padding+checksum)
 
-        return address+packet_type+sequence_number+click_type+x+y+scrolling+padding+checksum+crc
+        return address+sequence_number+click_type+x+y+scrolling+padding+checksum+crc
     
 
     def build_clicks(self, clicks):

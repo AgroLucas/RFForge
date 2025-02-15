@@ -21,18 +21,17 @@ from lib import common
 from devices.device import Device
 
 
-class Edenwood(Device):
-    """Represents a Edenwood keyboard or a Edenwood mouse.
+class Qware(Device):
+    """Represents a Qware keyboard or a Qware mouse.
     
-    Successfully tested with the 963716 CWL01 mouse and keyboard.
+    Successfully tested with the QW PCB-238BL mouse and keyboard.
     """
 
     ADDRESS_LENGTH = 5
-    CHANNELS = [20, 40, 54, 81]
+    CHANNELS = [2, 14, 18, 22, 30, 38, 50, 62, 66, 68, 70, 78]
     RATE = common.RF_RATE_2M
-    PACKET_SIZE = 19
-    PREAMBLE = "62:62:62:7F"
+    PREAMBLE = "AA:AA"
     CRC_SIZE = 2
 
-    def __init__(self, address, crc=None):
-        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, self.PACKET_SIZE, self.PREAMBLE, self.CRC_SIZE, crc)
+    def __init__(self, address, packet_size, crc=None):
+        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, packet_size, self.PREAMBLE, self.CRC_SIZE, crc)

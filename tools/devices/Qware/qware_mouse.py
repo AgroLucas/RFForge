@@ -20,23 +20,19 @@
 import crcmod
 from binascii import unhexlify
 
-from lib import common
-from devices.device import Device
 from devices.mouse import *
+from devices.Qware.qware import Qware
 
-class Qware_Mouse(Device):
+class Qware_Mouse(Qware):
     """Represents a Qware mouse.
     
+    Successfully tested with the QW PCB-238BL mouse.
     """
-    ADDRESS_LENGTH = 5
-    CHANNELS = [2, 14, 18, 22, 30, 38, 50, 62, 66, 68, 70, 78]
-    RATE = common.RF_RATE_2M
+
     PACKET_SIZE = 23
-    PREAMBLE = "AA:AA"
-    CRC_SIZE = 2
-    
+
     def __init__(self, address, crc_poly, crc_init):
-        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, self.PACKET_SIZE, self.PREAMBLE, self.CRC_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+        super().__init__(address, self.PACKET_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
 
 

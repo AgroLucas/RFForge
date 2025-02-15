@@ -20,26 +20,19 @@
 import crcmod
 from binascii import unhexlify
 
-from lib import common
-from devices.device import Device
 from devices.keyboard import * 
+from devices.Qware.qware import Qware
 
-class Qware_Keyboard(Device):
+class Qware_Keyboard(Qware):
     """Represents a Qware Keyboard.
     
     Successfully tested with the QW PCB-238BL keyboard.
     """
-    ADDRESS_LENGTH = 4
-    CHANNELS = [2, 14, 18, 22, 30, 38, 50, 62, 66, 68, 70, 78]
-    RATE = common.RF_RATE_2M
+
     PACKET_SIZE = 18
-    PREAMBLE = "AA:AA"
-    CRC_SIZE = 2
-
-
 
     def __init__(self, address, crc_poly, crc_init):
-        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, self.PACKET_SIZE, self.PREAMBLE, self.CRC_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+        super().__init__(address, self.PACKET_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
 
 
@@ -104,7 +97,7 @@ class Qware_Keyboard(Device):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        beginning_payload = b"\x12\x12\x12"
+        beginning_payload = b"\x12\x12"
         sequence_number = (0x40 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
         self.sequence_number = (self.sequence_number + 1) % 4
         padding = b"\x00"
