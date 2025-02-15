@@ -22,7 +22,6 @@ from binascii import unhexlify
 
 from lib import common
 from devices.device import Device
-from devices.mouse import *
 from devices.keyboard import * 
 
 class Qware_Keyboard(Device):
@@ -45,7 +44,7 @@ class Qware_Keyboard(Device):
 
 
     def parse_packet(self, packet):
-        p = packet[:self.PACKET_SIZE]
+        p = packet[:self.packet_size]
 
         sequence_int = int.from_bytes(p[7:8], "big")
         sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
