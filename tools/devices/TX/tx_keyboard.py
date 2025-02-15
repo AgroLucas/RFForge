@@ -122,3 +122,5 @@ class Tx_Keyboard(Tx):
             print(f"TX Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
             print(self.scancode_to_char(packet["array"]))
+            return True
+        return False

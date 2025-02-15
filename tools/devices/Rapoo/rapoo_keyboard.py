@@ -119,5 +119,7 @@ class Rapoo_Keyboard(Rapoo):
                 print(f"Rapoo Keyboard Packet\tCHANNEL : {channel}")
                 print(packet)
                 print(self.scancodes_to_string(packet["array"]))
+                return True
+        return False
 
     

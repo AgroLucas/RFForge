@@ -82,3 +82,6 @@ class Tlsr85_Mouse(Tlsr85):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"TLSR85 Mouse Packet\tCHANNEL : {channel}")
             print(packet)
+            return True
+        return False
+    

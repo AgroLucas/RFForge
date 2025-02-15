@@ -20,44 +20,60 @@
 import crcmod
 from binascii import unhexlify
 
-from devices.Edenwood.edenwood import Edenwood
+from lib import common
+from devices.device import Device
+from devices.mouse import *
 from devices.keyboard import * 
 
-
-class Edenwood_Keyboard(Edenwood):
-    """ Represents an Edenwood keyboard.
+class Qware_Keyboard(Device):
+    """Represents a Qware Keyboard.
     
-    Successfully tested with the 963716 CWL01 keyboard.
+    Successfully tested with the QW PCB-238BL keyboard.
     """
+    ADDRESS_LENGTH = 4
+    CHANNELS = [2, 14, 18, 22, 30, 38, 50, 62, 66, 68, 70, 78]
+    RATE = common.RF_RATE_2M
+    PACKET_SIZE = 18
+    PREAMBLE = "AA:AA"
+    CRC_SIZE = 2
+
+
 
     def __init__(self, address, crc_poly, crc_init):
-        super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, self.PACKET_SIZE, self.PREAMBLE, self.CRC_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
 
 
     def parse_packet(self, packet):
-        p = packet[:self.packet_size]
-        sequence_int = int.from_bytes(p[5:6], "big")
+        p = packet[:self.PACKET_SIZE]
+
+        sequence_int = int.from_bytes(p[7:8], "big")
         sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
-        modifiers = int.from_bytes(p[6:7], "big")
-        return {"address" :         p[:self.address_length].hex(),
-                "payload" :         p[:-self.crc_size].hex(),
-                "packet type":      p[4:5].hex(),
-                "sequence number":  sequence_number,
-                "array":            [hex(item) for item in p[7:13]],
-                "checksum":         p[16:17].hex(),
-                "crc" :             p[-self.crc_size:].hex(),
-                "raw modifiers":    modifiers,
+
+        mask_array = 0x3b0d6d2af9bc
+        xored_array = int.from_bytes(p[10:16], byteorder="big")
+        unxored_array = xored_array ^ mask_array
+
+        mask_modifiers = 0xF5
+        xored_modifiers = int.from_bytes(p[9:10], "big")
+        unxored_modifiers = xored_modifiers ^ mask_modifiers
+        return {
+            "address" :             p[:self.address_length].hex(),
+            "payload" :             p[:-self.crc_size].hex(),
+            "sequence number":      sequence_number,
+            "array":                [hex(byte) for byte in unxored_array.to_bytes(6, byteorder="big")],
+            "crc" :                 p[-self.crc_size:].hex(),
+                "raw modifiers":    unxored_modifiers,
                 "modifiers" : {
-                    "is left ctrl" :            (modifiers >> 0) & 1,
-                    "is left shift" :           (modifiers >> 1) & 1,
-                    "is left alt" :             (modifiers >> 2) & 1,
-                    "is left gui" :             (modifiers >> 3) & 1,
-                    "is right ctrl" :           (modifiers >> 4) & 1,
-                    "is right shift" :          (modifiers >> 5) & 1,
-                    "is right alt" :            (modifiers >> 6) & 1
+                    "is left ctrl" :            (unxored_modifiers >> 0) & 1,
+                    "is left shift" :           (unxored_modifiers >> 1) & 1,
+                    "is left alt" :             (unxored_modifiers >> 2) & 1,
+                    "is left gui" :             (unxored_modifiers >> 3) & 1,
+                    "is right ctrl" :           (unxored_modifiers >> 4) & 1,
+                    "is right shift" :          (unxored_modifiers >> 5) & 1,
+                    "is right alt" :            (unxored_modifiers >> 6) & 1
                     }
-                }
+            }
     
 
     def scancodes_to_string(self, array, modifiers):
@@ -89,16 +105,15 @@ class Edenwood_Keyboard(Edenwood):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        packet_type = b"\xbe"
-        sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
+        beginning_payload = b"\x12\x12\x12"
+        sequence_number = (0x40 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
         self.sequence_number = (self.sequence_number + 1) % 4
+        padding = b"\x00"
         flags = self.build_flags(modifiers)
         array = self.build_array(scancodes)
-        padding = b"\x00\x00\x00"
-        checksum = self.calculate_checksum(int.from_bytes(flags, "big"), [int(x) for x in array])
-        crc = self.calculate_crc(address+packet_type+sequence_number+flags+array+padding+checksum)
-        
-        return address+packet_type+sequence_number+flags+array+padding+checksum+crc
+        crc = self.calculate_crc(address+beginning_payload+sequence_number+padding+flags+array)
+
+        return address+beginning_payload+sequence_number+padding+flags+array+crc
     
 
     def build_flags(self, modifiers):
@@ -108,13 +123,14 @@ class Edenwood_Keyboard(Edenwood):
             modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the byte.
         
         Returns:
-            bytes: A 2 bytes value containing the given modifiers.
+            bytes: A 2 bytes value containing the given modifiers xored with the appropriate mask for qware.
         """
+        mask_modifiers = 0xF5
         flags = 0
         for modifier in modifiers:
             if modifier in KeyboardModifiers:
                 flags |= modifier.value
-        return flags.to_bytes(1, "big")
+        return (flags ^ mask_modifiers).to_bytes(1, "big")
     
 
     def build_array(self, scancodes):
@@ -126,8 +142,9 @@ class Edenwood_Keyboard(Edenwood):
             scancodes (list[KeyboardScancode]): A list of KeyboardScancode to include in the array.       
         
         Returns:
-            bytes: The raw array of a packet including exactly 6 scancodes in bytes format.
+            bytes: The raw array of a packet including exactly 6 scancodes in bytes format and xored using the appropriate mask for qware.
         """
+        mask_array = 0x3b0d6d2af9bc
         array = b""
         for i in range(len(scancodes)):
             if i == 6 :
@@ -135,28 +152,14 @@ class Edenwood_Keyboard(Edenwood):
             if scancodes[i] in KeyboardScancode:
                 array += scancodes[i].value.to_bytes(1, "big")
         array += unhexlify("00" * (6 - len(scancodes)))
-        return array
-    
+        return bytes(a ^ b for a, b in zip(array, mask_array.to_bytes(6, "big")))
 
-    def calculate_checksum(self, modifiers, array):
-        """Calculate the checksum for the Edenwood keyboard.
-
-        Args:
-            modifiers (int): The modifiers value.
-            array (list[int]): The list of pressed keys.
-
-        Returns:
-            bytes: The checksum for the Edenwood keyboard in byte.
-        """
-        return  ((modifiers + sum(array)) % 256).to_bytes(1, "big")
     
 
     def handle_sniffed_packet(self, packet, channel):
         if self.check_crc(packet["crc"], packet["payload"]):
-            if packet["packet type"] == "be":
-                print(f"Edenwood Keyboard Packet\tCHANNEL : {channel}")
-                print(packet)
-                print(self.scancodes_to_string(packet["array"], packet["raw modifiers"]))
-                return True
+            print(f"Qware Keyboard Packet\tCHANNEL : {channel}")
+            print(packet)
+            print(self.scancodes_to_string(packet["array"], packet["raw modifiers"]))
+            return True
         return False
-    

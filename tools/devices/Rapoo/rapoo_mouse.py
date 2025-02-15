@@ -95,3 +95,5 @@ class Rapoo_Mouse(Rapoo):
             if packet["packet type"] == "04":
                 print(f"Rapoo Mouse Packet\tCHANNEL : {channel}")
                 print(packet)
+                return True
+        return False

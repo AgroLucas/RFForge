@@ -150,3 +150,6 @@ class Tlsr85_Keyboard(Tlsr85):
             print(f"TLSR85 Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
             print(self.scancodes_to_string(packet["array"], packet["raw_modifiers"]))
+            return True
+        return False
+    

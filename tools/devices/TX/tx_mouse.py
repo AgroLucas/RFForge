@@ -109,3 +109,6 @@ class Tx_mouse(Tx):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"TX Mouse Packet\tCHANNEL : {channel}")
             print(packet)
+            return True
+        return False
+    

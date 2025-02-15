@@ -121,3 +121,5 @@ class Edenwood_Mouse(Edenwood):
             if packet["packet type"] == "bc":
                 print(f"Edenwood Mouse Packet\tCHANNEL : {channel}")
                 print(packet)
+                return True
+        return False

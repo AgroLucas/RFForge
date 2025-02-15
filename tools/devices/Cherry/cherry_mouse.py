@@ -101,3 +101,5 @@ class Cherry_Mouse(Device):
             if self.check_crc(p["crc"], p["payload"]):
                 print(f"Cherry Mouse Packet\tCHANNEL : {channel}")
                 print(p)
+                return True
+        return False
