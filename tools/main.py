@@ -40,7 +40,8 @@ from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
 from devices.Cherry.cherry_mouse import Cherry_Mouse
 from devices.Qware.qware_keyboard import Qware_Keyboard
 from devices.Qware.qware_mouse import Qware_Mouse
-
+from devices.Hp.hp_mouse import HP_Mouse
+from binascii import unhexlify
 
 common.init_args('./main.py')
 common.parse_and_init()
@@ -183,8 +184,19 @@ attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_mo
 
 
 """
+----------------------------HP----------------------------
+"""
+# NOT IMPLEMENTED
+
+hp_mouse = HP_Mouse("aa:ab:e2:dc", 0x11021, 0x5c3c)
+hp_mouse.sniff()
+#hp_mouse.spoof([unhexlify("aaabe2dc7b89ee99401d6b102c987792fb6ef07b32")])
+
+
+"""
 ----------------------------Cherry----------------------------
 """
+# NOT IMPLEMENTED
 
 cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
 #cherry_mouse.sniff()
