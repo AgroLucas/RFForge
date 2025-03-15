@@ -29,6 +29,7 @@ import time
 from lib import common
 from devices.keyboard import * 
 from devices.mouse import * 
+from devices.device import Device
 from devices.TLSR85.tlsr85_keyboard import Tlsr85_Keyboard
 from devices.TLSR85.tlsr85_mouse import Tlsr85_Mouse
 from devices.TX.tx_mouse import Tx_mouse
@@ -45,6 +46,14 @@ from binascii import unhexlify
 
 common.init_args('./main.py')
 common.parse_and_init()
+
+
+"""
+----------------------------Initial analysis----------------------------
+"""
+
+#Device.quick_sniff("92:78:79:dc:69", [22, 34, 43, 56, 67, 78], common.RF_RATE_2M, 20)
+Device.fuzz_channels("92:78:79:dc:69", common.RF_RATE_2M)
 
 
 """
@@ -189,7 +198,7 @@ attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_mo
 # NOT IMPLEMENTED
 
 hp_mouse = HP_Mouse("aa:ab:e2:dc", 0x11021, 0x5c3c)
-hp_mouse.sniff()
+#hp_mouse.sniff()
 #hp_mouse.spoof([unhexlify("aaabe2dc7b89ee99401d6b102c987792fb6ef07b32")])
 
 
@@ -200,5 +209,4 @@ hp_mouse.sniff()
 
 cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
 #cherry_mouse.sniff()
-
 

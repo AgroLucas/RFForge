@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 from binascii import unhexlify
 from lib import common
 import time
-
+import usb
 
 class Device(ABC):
     """Represent a device (keyboard, mouse, ...) that can be sniffed/spoofed using the Crazyradio PA USB dongle.
@@ -33,7 +33,7 @@ class Device(ABC):
         """ Initialize a device.
         
         Attributes:
-            address (str): The address of the device separated by commas (e.g., "55:5A:F2").
+            address (str): The address of the device separated by colons (e.g., "55:5A:F2").
             address_length (int): The size in bytes of the address.
             channels (list[int]): A table containing all the channels used by the device (e.g., [34, 47, 68, 75]) (should be even to avoid errors).
             rate (int): The rate of the device. Either 0 for 250Kps, 1 for 1Mbps or 2 for 2Mbps.
@@ -114,18 +114,21 @@ class Device(ABC):
         common.radio.enter_promiscuous_mode_generic(unhexlify(self.address.replace(':', '')), rate=self.rate)
         last_tune = time.time()
 
-        while True:
-            # Increment the channel after dwell_time
-            if len(self.channels) > 1 and time.time() - last_tune > dwell_time:
-                channel_index = (channel_index + 1) % (len(self.channels))
-                common.radio.set_channel(self.channels[channel_index])
-                last_tune = time.time()
+        try:
+            while True:
+                # Increment the channel after dwell_time
+                if len(self.channels) > 1 and time.time() - last_tune > dwell_time:
+                    channel_index = (channel_index + 1) % (len(self.channels))
+                    common.radio.set_channel(self.channels[channel_index])
+                    last_tune = time.time()
 
-            value = common.radio.receive_payload()
-            if len(value) >= self.address_length:
-                if bytes(value[:self.address_length]) == unhexlify(self.address.replace(':', '')):    
-                    if self.handle_sniffed_packet(self.parse_packet(bytes(value)), self.channels[channel_index]):
-                        last_tune = time.time()
+                value = common.radio.receive_payload()
+                if len(value) >= self.address_length:
+                    if bytes(value[:self.address_length]) == unhexlify(self.address.replace(':', '')):
+                        if self.handle_sniffed_packet(self.parse_packet(bytes(value)), self.channels[channel_index]):
+                            last_tune = time.time()
+        except KeyboardInterrupt:
+            usb.core.find(idVendor=0x1915, idProduct=0x0102).reset()
     
     
     def spoof(self, attack):
@@ -150,3 +153,81 @@ class Device(ABC):
                     for _ in range(15):
                         common.radio.transmit_payload_generic(payload=preamble+payload, address=address)
                         time.sleep(0.00001)
+
+    
+
+    @staticmethod
+    def quick_sniff(address, channels, rate, packet_size):
+        """Sniff a device without having to create a new class.
+
+        Highlights the difference in packet to facilitate reverse engineering.
+
+        Args:
+            address (str): The address of the device separated by colons (e.g., "55:5A:F2").
+            channels (list[int]): A table containing all the channels used by the device (e.g., [34, 47, 68, 75]) (should be even to avoid errors).
+            rate (int): The rate of the device. Either 0 for 250Kps, 1 for 1Mbps or 2 for 2Mbps.
+            packet_size (int): The size in byte of the packet without the preamble.
+        """
+        dummy = DummySniffingDevice(address, len(address.replace(':', ''))//2, channels, rate, packet_size)
+        dummy.sniff()
+
+
+    @staticmethod
+    def fuzz_channels(address, rate):
+        """Fuzz and display the channels of a device without having to create a new class.
+
+        Args:
+            address (str): The address of the device separated by colons (e.g., "55:5A:F2").
+            rate (int): The rate of the device. Either 0 for 250Kps, 1 for 1Mbps or 2 for 2Mbps.
+        """
+        dummy = DummyChannelFuzzingDevice(address, len(address.replace(':', ''))//2, rate)
+        dummy.sniff()
+
+    
+class DummySniffingDevice(Device):
+    """Dummy implementation of the class Device for the method quick_sniff.
+
+    """
+
+    last_packet = ""
+    
+    def __init__(self, address, address_length, channel, rate, packet_size):
+        super().__init__(address, address_length, channel, rate, packet_size, "", 0, None)
+
+    def parse_packet(self, packet):
+        return packet.hex()
+    
+    def handle_sniffed_packet(self, packet, channel):
+        if self.last_packet != "":
+            highlight = ""
+            for i in range(len(packet)):
+                if packet[i] == self.last_packet[i]:
+                    highlight += packet[i]
+                else:
+                    highlight += '\033[91m' + packet[i] + '\033[0m'
+            print(highlight)
+        else:
+            print(packet)
+        self.last_packet = packet
+
+    
+class DummyChannelFuzzingDevice(Device):
+    """Dummy implementation of the class Device for the method fuzz_channels.
+
+    """
+
+    fuzzed_channels = []
+    
+    def __init__(self, address, address_length, rate):
+        super().__init__(address, address_length, range(0,99), rate, 0, "", 0, None)
+
+    def parse_packet(self, packet):
+        return packet.hex()
+    
+    def handle_sniffed_packet(self, packet, channel):
+        if channel in self.fuzzed_channels:
+            return False
+        self.fuzzed_channels.append(channel)
+        print(self.fuzzed_channels)
+        return False
+
