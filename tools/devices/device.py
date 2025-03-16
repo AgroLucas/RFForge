@@ -83,7 +83,7 @@ class Device(ABC):
         """Parse a raw packet into a dictionary.
 
         Args:
-            packet (str): The raw packet to parse.
+            packet list[bytes]: The raw packet to parse.
 
         Returns:
             dict[str, str]: A dictionary of the parsed packet where the keys are strings and the values are hexadecimal strings.  
@@ -109,7 +109,6 @@ class Device(ABC):
         """
         dwell_time = 0.2
         channel_index = 0
-        #self.channels = range(0,84) # fuzz channels
         common.radio.set_channel(self.channels[channel_index]) # Set channel here to prevent USBError (somehow)
         common.radio.enter_promiscuous_mode_generic(unhexlify(self.address.replace(':', '')), rate=self.rate)
         last_tune = time.time()
