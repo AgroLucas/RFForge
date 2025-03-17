@@ -33,6 +33,7 @@ class Edenwood_Keyboard(Edenwood):
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
+        self.sniffed_keys = ""
 
 
     def parse_packet(self, packet):
@@ -42,7 +43,6 @@ class Edenwood_Keyboard(Edenwood):
         modifiers = int.from_bytes(p[6:7], "big")
         return {"address" :         p[:self.address_length].hex(),
                 "payload" :         p[:-self.crc_size].hex(),
-                "packet type":      p[4:5].hex(),
                 "sequence number":  sequence_number,
                 "array":            [hex(item) for item in p[7:13]],
                 "checksum":         p[16:17].hex(),
@@ -89,8 +89,8 @@ class Edenwood_Keyboard(Edenwood):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
-        self.sequence_number = (self.sequence_number + 1) % 4
+        sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits
+        self.sequence_number = (self.sequence_number + 1) % 4 # update object's sequence number
         flags = self.build_flags(modifiers)
         array = self.build_array(scancodes)
         padding = b"\x00\x00\x00"
@@ -152,10 +152,10 @@ class Edenwood_Keyboard(Edenwood):
 
     def handle_sniffed_packet(self, packet, channel):
         if self.check_crc(packet["crc"], packet["payload"]):
-            if packet["packet type"] == "be":
-                print(f"Edenwood Keyboard Packet\tCHANNEL : {channel}")
-                print(packet)
-                print(self.scancodes_to_string(packet["array"], packet["raw modifiers"]))
-                return True
+            print(f"Edenwood Keyboard Packet\tCHANNEL : {channel}")
+            print(packet)
+            self.sniffed_keys += self.scancodes_to_string(packet["array"], packet["raw modifiers"])
+            print(self.sniffed_keys)
+            return True
         return False
     

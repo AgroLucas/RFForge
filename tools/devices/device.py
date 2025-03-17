@@ -194,7 +194,7 @@ class DummySniffingDevice(Device):
         super().__init__(address, address_length, channel, rate, packet_size, "", 0, None)
 
     def parse_packet(self, packet):
-        return packet.hex()
+        return packet[:self.packet_size].hex()
     
     def handle_sniffed_packet(self, packet, channel):
         if self.last_packet != "":

@@ -40,7 +40,6 @@ class Edenwood_Mouse(Edenwood):
         sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
         return {"address" :         p[:self.address_length].hex(),
                 "payload" :         p[:-self.crc_size].hex(),
-                "packet type":      p[4:5].hex(),
                 "sequence number":  sequence_number,
                 "click type":       p[6:7].hex(),
                 "x":                p[7:9].hex(),
@@ -64,8 +63,8 @@ class Edenwood_Mouse(Edenwood):
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
         address = unhexlify(self.address.replace(':', ''))
-        sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits starting from right
-        self.sequence_number = (self.sequence_number + 1) % 4
+        sequence_number = (0x59 | (self.sequence_number << 1)).to_bytes(1, "big") # sequence number is in 2nd and 3rd bits
+        self.sequence_number = (self.sequence_number + 1) % 4 # update object's sequence number
         click_type = self.build_clicks(clicks)
         x = unhexlify(x_move)
         y = unhexlify(y_move)
@@ -106,19 +105,18 @@ class Edenwood_Mouse(Edenwood):
             bytes: The checksum for the Edenwood mouse in byte.
         """
         offset = 0
-        if scrolling >= 255:
+        if scrolling > 255:
             offset += 1
-        if x >= 255:
+        if x > 255:
             offset += 1
-        if y >= 255:
+        if y > 255:
             offset += 1
         return  ((click_type + x + y + scrolling - offset) % 256).to_bytes(1, "big")
         
 
     def handle_sniffed_packet(self, packet, channel):
         if self.check_crc(packet["crc"], packet["payload"]):
-            if packet["packet type"] == "bc":
-                print(f"Edenwood Mouse Packet\tCHANNEL : {channel}")
-                print(packet)
-                return True
+            print(f"Edenwood Mouse Packet\tCHANNEL : {channel}")
+            print(packet)
+            return True
         return False

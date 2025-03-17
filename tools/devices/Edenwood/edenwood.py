@@ -28,10 +28,10 @@ class Edenwood(Device):
     """
 
     ADDRESS_LENGTH = 5
-    CHANNELS = [20, 40, 54, 81]
+    CHANNELS = [20, 40, 54, 81] # checked with fuzz_channels()
     RATE = common.RF_RATE_2M
     PACKET_SIZE = 19
-    PREAMBLE = "62:62:62:7F"
+    PREAMBLE = "55" # not needed
     CRC_SIZE = 2
 
     def __init__(self, address, crc=None):
