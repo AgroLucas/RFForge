@@ -60,9 +60,9 @@ class Rapoo_Mouse(Rapoo):
         Returns:
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
-        address = unhexlify(self.address.replace(':', ''))
+        address = unhexlify(self.address.replace(':', '')) + b"\x69" + b"\x04" # seems to be the full address of the keyboard but crazyradio supports only up to 5-bytes address
         sequence_number = self.sequence_number.to_bytes(1, "big")
-        self.sequence_number = (self.sequence_number + 1) % 255
+        self.sequence_number = (self.sequence_number + 1) % 255 # update object's sequence number
         padding = b"\x01\x01\x4c\xa2\x2e"
         click_type = self.build_clicks(clicks)
         x = unhexlify(x_move)

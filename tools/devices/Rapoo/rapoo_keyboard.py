@@ -67,7 +67,7 @@ class Rapoo_Keyboard(Rapoo):
             elif value == KeyboardScancode .KEY_RALT.value:
                 modifiers += 2
         chars = ""
-        for scancode in array:
+        for scancode in array: # convert to chars
             chars += KeyboardScancode.SCANCODE_TO_CHAR.value.get((int(scancode, 16), modifiers), "")
         return chars
 
@@ -81,9 +81,9 @@ class Rapoo_Keyboard(Rapoo):
         Returns:
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
-        address = unhexlify(self.address.replace(':', ''))
+        address = unhexlify(self.address.replace(':', '')) + b"\x69" + b"\x06" # seems to be the full address of the keyboard but crazyradio supports only up to 5-bytes address
         sequence_number = self.sequence_number.to_bytes(1, "big")
-        self.sequence_number = (self.sequence_number + 1) % 255
+        self.sequence_number = (self.sequence_number + 1) % 255 # update object's sequence number
         padding = b"\x01\x02\xea\x3a\x16"
         array = self.build_array(scancodes)
         crc = self.calculate_crc(address+sequence_number+padding+array)
@@ -108,7 +108,7 @@ class Rapoo_Keyboard(Rapoo):
                 break
             if scancodes[i] in KeyboardScancode:
                 array += scancodes[i].value.to_bytes(1, "big")
-        array += unhexlify("00" * (6 - len(scancodes)))
+        array += unhexlify("00" * (6 - len(scancodes))) # fill the empty elements with \x00
         return array
     
 

