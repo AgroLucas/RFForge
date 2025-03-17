@@ -33,6 +33,7 @@ class Rapoo_Keyboard(Rapoo):
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
+        self.sniffed_keys = ""
 
 
     def parse_packet(self, packet):
@@ -117,7 +118,8 @@ class Rapoo_Keyboard(Rapoo):
             if packet["packet type"] == "06":
                 print(f"Rapoo Keyboard Packet\tCHANNEL : {channel}")
                 print(packet)
-                print(self.scancodes_to_string(packet["array"]))
+                self.sniffed_keys += self.scancodes_to_string(packet["array"])
+                print(self.sniffed_keys)
                 return True
         return False
 

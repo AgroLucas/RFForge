@@ -129,7 +129,7 @@ attack_rapoo_mouse = [
     rapoo_mouse.build_packet([MouseClickType.LEFT_CLICK])
 ]
 
-#rapoo_keyboard.sniff()
+rapoo_keyboard.sniff()
 #rapoo_mouse.sniff()
 #rapoo_keyboard.spoof(attack_rapoo_keyboard)
 #rapoo_mouse.spoof(attack_rapoo_mouse)

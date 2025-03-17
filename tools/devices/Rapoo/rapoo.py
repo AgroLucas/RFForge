@@ -29,7 +29,7 @@ class Rapoo(Device):
     CHANNELS = [22, 26, 34, 38, 43, 47, 56, 60, 67, 71, 78, 82] # checked with fuzz_channels()
     RATE = common.RF_RATE_2M
     PACKET_SIZE = 21
-    PREAMBLE = "AA:AA"
+    PREAMBLE = "AA:AA" # synchronization bit does not seem to be needed
     CRC_SIZE = 2
 
     def __init__(self, address, crc):
