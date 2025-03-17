@@ -123,8 +123,6 @@ class Device(ABC):
 
                 value = common.radio.receive_payload()
                 if len(value) >= self.address_length:
-                    #print(bytes(value[:self.address_length]))
-                    #print(unhexlify(self.address.replace(':', '')))
                     if bytes(value[:self.address_length]) == unhexlify(self.address.replace(':', '')):
                         if self.handle_sniffed_packet(self.parse_packet(bytes(value)), self.channels[channel_index]):
                             last_tune = time.time()
