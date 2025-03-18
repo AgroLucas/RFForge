@@ -28,7 +28,7 @@ class Qware(Device):
     """
 
     ADDRESS_LENGTH = 5
-    CHANNELS = [2, 14, 18, 22, 30, 38, 50, 62, 66, 68, 70, 78]
+    CHANNELS = [2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 62, 66, 68, 70, 72, 74, 78, 80, 82] # checked with fuzz_channels()
     RATE = common.RF_RATE_2M
     PREAMBLE = "AA:AA"
     CRC_SIZE = 2

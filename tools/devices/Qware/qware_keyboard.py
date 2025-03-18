@@ -34,6 +34,7 @@ class Qware_Keyboard(Qware):
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, self.PACKET_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
+        self.sniffed_keys = ""
 
 
     def parse_packet(self, packet):
@@ -42,13 +43,14 @@ class Qware_Keyboard(Qware):
         sequence_int = int.from_bytes(p[7:8], "big")
         sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
 
-        mask_array = 0x3b0d6d2af9bc
-        xored_array = int.from_bytes(p[10:16], byteorder="big")
-        unxored_array = xored_array ^ mask_array
-
         mask_modifiers = 0xF5
         xored_modifiers = int.from_bytes(p[9:10], "big")
         unxored_modifiers = xored_modifiers ^ mask_modifiers
+
+        mask_array = 0x3B0D6D2AF9BC
+        xored_array = int.from_bytes(p[10:16], byteorder="big")
+        unxored_array = xored_array ^ mask_array
+
         return {
             "address" :             p[:self.address_length].hex(),
             "payload" :             p[:-self.crc_size].hex(),
@@ -136,7 +138,7 @@ class Qware_Keyboard(Qware):
         Returns:
             bytes: The raw array of a packet including exactly 6 scancodes in bytes format and xored using the appropriate mask for qware.
         """
-        mask_array = 0x3b0d6d2af9bc
+        mask_array = 0x3B0D6D2AF9BC
         array = b""
         for i in range(len(scancodes)):
             if i == 6 :
@@ -152,6 +154,7 @@ class Qware_Keyboard(Qware):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"Qware Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
-            print(self.scancodes_to_string(packet["array"], packet["raw modifiers"]))
+            self.sniffed_keys += self.scancodes_to_string(packet["array"], packet["raw modifiers"])
+            print(self.sniffed_keys)
             return True
         return False

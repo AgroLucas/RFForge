@@ -42,17 +42,17 @@ class Qware_Mouse(Qware):
         sequence_int = int.from_bytes(p[7:8], "big")
         sequence_number = hex((((sequence_int >> 2) & 1) << 1) | ((sequence_int >> 1) & 1)) # get 3rd and 2nd bits
 
-        mask_click = 0xf5
+        mask_click = 0xF5
         xored_click = int.from_bytes(p[9:10], "big")
         unxored_click = xored_click ^ mask_click
 
-        mask_scrolling = 0xbc
+        mask_scrolling = 0xBC
         xored_scrolling = int.from_bytes(p[15:16], "big")
         unxored_scrolling = xored_scrolling ^ mask_scrolling
 
 
-        mask_x = 0x3b0d6d2af9
-        mask_y = 0x518e4cfdc1
+        mask_x = 0x3B0D6D2AF9
+        mask_y = 0x518E4CFDC1
         xored_x = int.from_bytes(p[10:15], "big")
         xored_y = int.from_bytes(p[16:21], "big")
         unxored_x = xored_x ^ mask_x
@@ -88,8 +88,8 @@ class Qware_Mouse(Qware):
         self.sequence_number = (self.sequence_number + 1) % 4
         padding2 = b"\x10"
         click_type = self.build_clicks(clicks)
-        x = (int(x_move, 16) ^ 0x3b0d6d2af9).to_bytes(5, byteorder="big")
-        y = (int(y_move, 16) ^ 0x518e4cfdc1).to_bytes(5, byteorder="big")
+        x = (int(x_move, 16) ^ 0x3B0D6D2AF9).to_bytes(5, byteorder="big")
+        y = (int(y_move, 16) ^ 0x518E4CFDC1).to_bytes(5, byteorder="big")
         scrolling = (int(scrolling_move, 16) ^ 0xbc).to_bytes(1, byteorder="big")
         crc = self.calculate_crc(address+padding+sequence_number+padding2+click_type+x+scrolling+y)
 
@@ -109,7 +109,7 @@ class Qware_Mouse(Qware):
         for click in clicks:
             if click in MouseClickType:
                 click_result |= click.value
-        return (click_result ^ 0xf5).to_bytes(1, "big")
+        return (click_result ^ 0xF5).to_bytes(1, "big")
         
 
     def handle_sniffed_packet(self, packet, channel):

