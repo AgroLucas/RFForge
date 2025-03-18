@@ -28,10 +28,10 @@ class Tx(Device):
     """
 
     ADDRESS_LENGTH = 4
-    CHANNELS = [28, 35, 37, 42, 56, 68, 77, 40]
+    CHANNELS = [28, 35, 37, 40, 42, 56, 68, 77]
     RATE = common.RF_RATE_1M
     PACKET_SIZE = 16
-    PREAMBLE = "FF:FF:FF:FF"
+    PREAMBLE = "FF" # not needed
     CRC_SIZE = 2
 
     def __init__(self, address, crc=None):

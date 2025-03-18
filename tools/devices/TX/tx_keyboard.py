@@ -31,6 +31,7 @@ class Tx_Keyboard(Tx):
 
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+        self.sniffed_keys = ""
 
 
     def parse_packet(self, packet):
@@ -59,7 +60,7 @@ class Tx_Keyboard(Tx):
             modifiers (list[KeyboardModifiers]): A list of KeyboardModifiers to include in the first packet.
 
         Returns:
-            bytes: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a key release (they does not contain the preamble).
+            bytes: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a key release.
         """
         packets = []
         address = unhexlify(self.address.replace(':', ''))
@@ -121,6 +122,7 @@ class Tx_Keyboard(Tx):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"TX Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
-            print(self.scancode_to_char(packet["array"]))
+            self.sniffed_keys += self.scancode_to_char(packet["array"])
+            print(self.sniffed_keys)
             return True
         return False

