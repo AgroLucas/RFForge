@@ -30,20 +30,21 @@ class Tlsr85_Keyboard(Tlsr85):
     Successfully tested with the Trust ODY II and the Poss PSKEY530BK.
     """
 
-    PACKET_SIZE = 22
+    PACKET_SIZE = 23
 
 
-    def __init__(self, address, preamble, crc_poly, crc_init):
-        super().__init__(address, self.PACKET_SIZE, preamble, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+    def __init__(self, address, crc_poly, crc_init):
+        super().__init__(address, self.PACKET_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
+        self.sniffed_keys = ""
 
 
     def parse_packet(self, packet):
         p = packet[:self.packet_size]
-        modifiers = int.from_bytes(p[12:14], "big")
+        modifiers = int.from_bytes(p[13:15], "big")
         return {"address" :         p[:self.address_length].hex(),
                 "payload" :         p[:-self.crc_size].hex(),
-                "sequence number" : p[10:11].hex(),
+                "sequence number" : p[11:12].hex(),
                 "array" :           [hex(item) for item in p[-(6+self.crc_size):-self.crc_size]],
                 "crc" :             p[-self.crc_size:].hex(),
                 "raw_modifiers":    modifiers,
@@ -149,7 +150,8 @@ class Tlsr85_Keyboard(Tlsr85):
         if self.check_crc(packet["crc"], packet["payload"]):
             print(f"TLSR85 Keyboard Packet\tCHANNEL : {channel}")
             print(packet)
-            print(self.scancodes_to_string(packet["array"], packet["raw_modifiers"]))
+            self.sniffed_keys += self.scancodes_to_string(packet["array"], packet["raw_modifiers"])
+            print(self.sniffed_keys)
             return True
         return False
     

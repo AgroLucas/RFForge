@@ -27,10 +27,11 @@ class Tlsr85(Device):
     Successfully tested with the Trust ODY II and the Poss PSKEY530BK.    
     """
 
-    ADDRESS_LENGTH = 4
+    ADDRESS_LENGTH = 5
     CHANNELS = [5, 11, 17, 51, 57, 63, 69, 75]
     RATE = common.RF_RATE_2M
+    PREAMBLE = "AA:AA"
     CRC_SIZE = 2
 
-    def __init__(self, address, packet_size, preamble, crc=None):
-        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, packet_size, preamble, self.CRC_SIZE, crc)
+    def __init__(self, address, packet_size, crc=None):
+        super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, packet_size, self.PREAMBLE, self.CRC_SIZE, crc)
