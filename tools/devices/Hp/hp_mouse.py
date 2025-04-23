@@ -28,11 +28,11 @@ class HP_Mouse(Device):
     """Represents an HP mouse.
 
     """
-    ADDRESS_LENGTH = 4
-    CHANNELS = [5, 26, 30, 42, 58, 71, 74]
+    ADDRESS_LENGTH = 5
+    CHANNELS = [4, 74, 92]
     RATE = common.RF_RATE_1M
     PACKET_SIZE = 21
-    PREAMBLE = "FF:EE"
+    PREAMBLE = "55:55"
     CRC_SIZE = 2
 
 
@@ -41,15 +41,7 @@ class HP_Mouse(Device):
     def __init__(self, address, crc_poly, crc_init):
         super().__init__(address, self.ADDRESS_LENGTH, self.CHANNELS, self.RATE, self.PACKET_SIZE, self.PREAMBLE, self.CRC_SIZE, crcmod.mkCrcFun(crc_poly, initCrc=crc_init, rev=False, xorOut=0x0000))
         self.sequence_number = 0
-        self.crcs = [crcmod.mkCrcFun(0x11021, initCrc=0x5c3c, rev=False, xorOut=0x0000),
-                crcmod.mkCrcFun(0x11021, initCrc=0x3e44, rev=False, xorOut=0x0000)]
 
-    
-    def check_crc(self, expected_crc, crc_input):
-        for crc in self.crcs:
-            if f"{crc(unhexlify(crc_input)):04x}" == expected_crc:
-                return True
-        return False
 
 
     def parse_packet(self, packet):
@@ -63,7 +55,7 @@ class HP_Mouse(Device):
 
 
 
-    def build_packet(self, clicks, x_move="0000", y_move="0000", scrolling_move="00"):
+    def build_packet(self, clicks=[], x_move="0000", y_move="0000", scrolling_move="00"):
         """Build a raw packet.
 
         Args: 
@@ -75,7 +67,7 @@ class HP_Mouse(Device):
         Returns:
             bytes: A raw packet in bytes format (it does not contain the preamble).
         """
-        pass
+        return b"\xf1\x6e\x3d\xc4\x09\x35\xf3\xc6\x95\x0e\xee\xf1\xd6\x1a\x95\x90\x71\x97\x66\x50\x0a"
     
 
     def build_clicks(self, clicks):

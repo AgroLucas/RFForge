@@ -197,6 +197,8 @@ class DummySniffingDevice(Device):
         return packet[:self.packet_size].hex()
     
     def handle_sniffed_packet(self, packet, channel):
+        if packet[6] == "4":
+            return
         if self.last_packet != "":
             highlight = ""
             for i in range(len(packet)):
