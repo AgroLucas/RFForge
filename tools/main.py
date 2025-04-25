@@ -189,17 +189,6 @@ attack_qware_mouse = [qware_mouse.build_packet([MouseClickType.LEFT_CLICK], x_mo
 
 
 """
-----------------------------HP----------------------------
-"""
-# NOT IMPLEMENTED
-
-hp_mouse = HP_Mouse("f1:6e:3d:c4:09", 0x11021, 0x63DA)
-#hp_mouse.sniff()
-#print(hp_mouse.build_packet())
-#hp_mouse.spoof([hp_mouse.build_packet()])
-
-
-"""
 ----------------------------Cherry----------------------------
 """
 # Is encrypted, sniffing is not complete
