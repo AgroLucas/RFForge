@@ -1,6 +1,4 @@
 """
-  Copyright (C) 2016 Bastille Networks
-  Copyright (C) 2019 Matthias Deeg, SySS GmbH
   Copyright (C) 2025 Lucas Agro
 
   This program is free software: you can redistribute it and/or modify
