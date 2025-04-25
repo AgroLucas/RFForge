@@ -16,6 +16,10 @@ This project has been tested with a Crazyradio PA.
 
 Todo
 
+## Credits
+
+RFForge was originally a fork of [SySS-Research/keyjector](https://github.com/SySS-Research/keyjector), but all original code has since been removed. The current version is based solely on RFStorm.
+
 ## Disclaimer
 
 Use at your own risk. Do not use without full consent of everyone involved. For educational purposes only.
