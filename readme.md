@@ -1,13 +1,21 @@
-# KeyJector
+# RFForge
 
-Somewhat unified keystroke injection tool collection for 2.4 GHz wireless input devices.
+This project is based on the great [RFStorm nRF24LU1+ Research Firmware](https://github.com/BastilleResearch/nrf-research-firmware).
 
-Based on the following projects by Marc Newlin and Bastille Research:
-* [presentation-clickers](https://github.com/marcnewlin/presentation-clickers)
-* [nrf-reserach-firmware](https://github.com/BastilleResearch/nrf-research-firmware)
+## Description
 
-**_Caution: The software tool is still work in progress._**
+RFForge enables both sniffing and spoofing of wireless peripherals that use proprietary protocols.  
+This tool was developed as part of the thesis *Radio Based Analysis of Wireless Mice and Keyboards using Proprietary Protocols* presented at the University of Tartu.
 
-# Disclaimer
+## Installation
+
+Refer to the [RFStorm nRF24LU1+ Research Firmware](https://github.com/BastilleResearch/nrf-research-firmware) repository for installation instructions.
+This project has been tested with a Crazyradio PA.
+
+## Usage
+
+Todo
+
+## Disclaimer
 
 Use at your own risk. Do not use without full consent of everyone involved. For educational purposes only.
