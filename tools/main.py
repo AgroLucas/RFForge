@@ -39,7 +39,6 @@ from devices.Edenwood.edenwood_keyboard import Edenwood_Keyboard
 from devices.Cherry.cherry import Cherry
 from devices.Qware.qware_keyboard import Qware_Keyboard
 from devices.Qware.qware_mouse import Qware_Mouse
-from devices.Hp.hp_mouse import HP_Mouse
 
 common.init_args('./main.py')
 common.parse_and_init()
