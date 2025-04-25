@@ -24,7 +24,7 @@ or to sniff the raw data with the method:
 Device.quick_sniff(device_address, device_channels, device_data_rate, device_packet_size)
 ```
 
-To run an attack, simply uncomment the corresponding line in the script and run:  
+To run an attack, simply uncomment the corresponding line in the script and run inside the *tools* folder:  
 ```
 ./main.py
 ```
