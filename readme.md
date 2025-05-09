@@ -12,17 +12,11 @@ This tool was developed as part of the thesis *Radio Based Analysis of Wireless 
 Refer to the [RFStorm nRF24LU1+ Research Firmware](https://github.com/BastilleResearch/nrf-research-firmware) repository for installation instructions.  
 This project has been tested with a Crazyradio PA.
 
+TODO
+
 ## Usage
 
 The testing file is located at *tools/main.py*. This script instantiates the wireless devices, sets up, and launches sniffing and/or spoofing attacks.  
-It is also possible to fuzz the channels of a device with the method: 
-```
-Device.fuzz_channels(device_address, device_data_rate)
-``` 
-or to sniff the raw data with the method: 
-```
-Device.quick_sniff(device_address, device_channels, device_data_rate, device_packet_size)
-```
 
 To run an attack, simply uncomment the corresponding line in the script and run inside the *tools* folder:  
 ```
@@ -31,7 +25,21 @@ To run an attack, simply uncomment the corresponding line in the script and run 
 
 The exploit code is organized under the *tools/devices* directory.  
 The file *device.py* defines an abstract class representing a generic device.  
-Each specific device has its own implementation in its corresponding subfolder.
+Each specific device has its own implementation in its corresponding subfolder.  
+
+### Fuzz channels
+
+It is also possible to fuzz the channels of a device with the method: 
+```
+Device.fuzz_channels(device_address, device_data_rate)
+```
+
+### Sniff raw data
+
+Raw data can be sniffed with the method: 
+```
+Device.quick_sniff(device_address, device_channels, device_data_rate, device_packet_size)
+```
 
 ## Tested Devices
 
@@ -55,7 +63,7 @@ Each specific device has its own implementation in its corresponding subfolder.
 | **Cherry**  | DW5100               | Keyboard | No       | Yes      |
 |             | MW3000               | Mouse    | No       | Yes      |
 
-
+TODO add protocols
 
 ## Credits
 
