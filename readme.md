@@ -110,23 +110,70 @@ Device.quick_sniff(device_address, device_channels, device_data_rate, device_pac
 
 ### Trust & Poss
 
+The Trust and Poss devices use the same protocol.  
+Some fields could not be identified.  
+
+#### Keyboard
+
+![](protocol_images/Trust_keyboard.png)
+
+#### Mouse
+
+![](protocol_images/Trust_mouse.png)
 
 ### Rapoo
 
+#### Keyboard
+
+![](protocol_images/Rapoo_keyboard.png)
+
+#### Mouse
+
+![](protocol_images/Rapoo_mouse.png)
 
 ### Edenwood
 
+#### Keyboard
+
+![](protocol_images/Edenwood_keyboard.png)
+
+#### Mouse
+
+![](protocol_images/Edenwood_mouse.png)
 
 ### Qware
 
+#### Keyboard
+
+![](protocol_images/Qware_keyboard.png)
+
+#### Mouse
+
+![](protocol_images/Qware_mouse.png)
 
 ### Think Xtra
 
+The tested mouse has a packet type at the index 12. By setting this to the hexadecimal value 0x3, the packet will be interpreted as a keyboard packet
+
+#### Mouse
+
+![](protocol_images/ThinkXtra_mouse.png)
+
+#### Keyboard
+
+![](protocol_images/ThinkXtra_keyboard.png)
 
 ### Hama & Omega
 
+The Hama and Omega devices use the same protocols.
 
-### Cherry
+#### Keyboard
+
+![](protocol_images/Hama_keyboard.png)
+
+#### Mouse
+
+![](protocol_images/Hama_mouse.png)
 
 
 ## Credits
