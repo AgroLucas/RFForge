@@ -106,6 +106,28 @@ Device.quick_sniff(device_address, device_channels, device_data_rate, device_pac
 
 ³ The HP devices have not been found vulnerable to any attacks (as of right now), therefore there is no implementation for those devices.
 
+## Protocols
+
+### Trust & Poss
+
+
+### Rapoo
+
+
+### Edenwood
+
+
+### Qware
+
+
+### Think Xtra
+
+
+### Hama & Omega
+
+
+### Cherry
+
 
 ## Credits
 
