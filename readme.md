@@ -6,13 +6,14 @@ This project is based on the great [RFStorm nRF24LU1+ Research Firmware](https:/
 
 RFForge enables both sniffing and spoofing of wireless peripherals that use proprietary protocols.  
 This tool was developed as part of the thesis *Radio Based Analysis of Wireless Mice and Keyboards using Proprietary Protocols* presented at the University of Tartu.  
+
 This project has been tested with a Crazyradio PA.  
 
 ## Installation
 
 Refer to the [RFStorm nRF24LU1+ Research Firmware](https://github.com/BastilleResearch/nrf-research-firmware) repository for installation instructions.  
 
-Alternatively, if you wish/need to use a virtual environment, the following can be done:  
+Alternatively, if you wish or need to use a virtual environment, the following can be done:  
 
 ### Install dependencies
 
@@ -57,9 +58,9 @@ To run an attack, simply uncomment the corresponding line in the script and run 
 ./main.py
 ```
 
-The exploit code is organized under the *tools/devices* directory.  
-The file *device.py* defines an abstract class representing a generic device.  
-Each specific device has its own implementation in its corresponding subfolder.  
+The exploit code is organized under the *tools/devices* directory. The file *device.py* defines an abstract class representing a generic device, while each specific device has its own implementation within its respective subfolder.  
+A template implementation is available in the *tools/devices/Template* folder.
+
 
 ### Fuzz channels
 
@@ -67,6 +68,8 @@ It is also possible to fuzz the channels of a device with the method:
 ```
 Device.fuzz_channels(device_address, device_data_rate)
 ```
+While the program is running, it scans all channels in the 2.4GHz range to detect any data transmitted containing the target address. 
+For better results, generate frequent mouse clicks or keypresses near the nRF device.
 
 ### Sniff raw data
 
@@ -77,7 +80,7 @@ Device.quick_sniff(device_address, device_channels, device_data_rate, device_pac
 
 ## Tested Devices
 
-| Brand       | Device               | Type     | Sniffing | Spoofing |
+| Brand       | Device               | Type     | Sniffing¹ | Spoofing |
 |-------------|----------------------|----------|----------|----------|
 | **Trust**   | ODY-II               | Keyboard | Yes      | Yes      |
 |             | Yvi+                 | Mouse    | Yes      | No       |
@@ -89,13 +92,41 @@ Device.quick_sniff(device_address, device_channels, device_data_rate, device_pac
 | **Qware**   | QW PCB-238BL keyboard| Keyboard | Yes      | Yes      |
 |             | QW PCB-238BL mouse   | Mouse    | Yes      | Yes      |
 | **Think Xtra**| Ms6-TXn-wh         | Mouse    | Yes      | Yes      |
-| **Hama**    | AKMW-100 keyboard    | Keyboard | Yes      | Yes      |
+| **Hama**²    | AKMW-100 keyboard    | Keyboard | Yes      | Yes      |
 |             | AKMW-100 mouse       | Mouse    | Yes      | Yes      |
-| **Omega**   | OM08WBL              | Mouse    | Yes      | Yes      |
-| **HP**      | HSA-A011M            | Keyboard | No       | No       |
+| **Omega**²   | OM08WBL              | Mouse    | Yes      | Yes      |
+| **HP**³      | HSA-A011M            | Keyboard | No       | No       |
 |             | HAS-A005K            | Mouse    | No       | No       |
 | **Cherry**  | DW5100               | Keyboard | No       | Yes      |
 |             | MW3000               | Mouse    | No       | Yes      |
+
+¹ Sniffing for the different devices is currently a proof of concept. Many packets are missed because the frequency-hopping algorithms used by the peripherals hasn’t been implemented yet.
+
+² The Hama and Omega devices have been shown to be vulnerable to both sniffing and spoofing. However, due to their packet length exceeding the maximum size supported by the nRF dongle, no exploit could be implemented for these devices.
+
+³ The HP devices have not been found vulnerable to any attacks (as of right now), therefore there is no implementation for those devices.
+
+## Protocols
+
+### Trust & Poss
+
+
+### Rapoo
+
+
+### Edenwood
+
+
+### Qware
+
+
+### Think Xtra
+
+
+### Hama & Omega
+
+
+### Cherry
 
 
 ## Credits
