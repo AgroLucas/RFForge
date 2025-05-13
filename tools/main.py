@@ -107,6 +107,9 @@ attack_tx_mouse = tx_mouse.build_packet([MouseClickType.LEFT_CLICK], x_move="888
 ----------------------------Rapoo----------------------------
 """
 
+# The addresses for the Rapoo devices seem to be 7 byte longs, but the CrazyRadio supports up to 5 bytes of address. 
+# To be sure about the addresses'format, other Rapoo mice/keyboards should be analyzed.
+# In the exploit, the values 0x6906 or 0x6904 were hardcoded at the end of the address, those values may be different for other Rapoo devices.
 rapoo_keyboard = Rapoo_Keyboard("c7:92:78:79:dc", 0x11021, 0xefdf)
 rapoo_mouse = Rapoo_Mouse("c7:92:78:79:dc", 0x11021, 0xefdf)
 
