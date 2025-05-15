@@ -33,6 +33,7 @@ source venv/bin/activate
 ```
 python3 -m pip install -U -I pyusb
 python3 -m pip install -U platformio
+python3 -m pip install -U crcmod
 ```
 
 ### Clone the project and build the firmware
@@ -153,7 +154,7 @@ Some fields could not be identified.
 
 ### Think Xtra
 
-The tested mouse has a packet type at the index 12. By setting this to the hexadecimal value 0x3, the packet will be interpreted as a keyboard packet
+The tested mouse has a packet type at the index 12. By setting this to the hexadecimal value 0x3, the packet will be interpreted as a keyboard packet.
 
 #### Mouse
 
